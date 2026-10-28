@@ -67,7 +67,10 @@ function AuthForm() {
         ? await supabase.auth.signInWithPassword({ email, password })
         : await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/admin` } });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     if (mode === "up") toast.success("Check your email to confirm your account.");
   }
   return (
@@ -99,7 +102,10 @@ function Dashboard() {
       .from("bookings")
       .update({ status, approved_at: status === "approved" ? new Date().toISOString() : null })
       .eq("id", b.id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success(`Booking ${b.reference} ${status}`);
     if (status === "approved") window.open(approvalMsg(b), "_blank");
     load();

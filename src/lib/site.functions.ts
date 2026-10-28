@@ -20,7 +20,7 @@ export const createBooking = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("bookings")
-      .insert(data)
+      .insert({ ...data, notes: data.notes ?? null })
       .select("reference")
       .single();
     if (error) {
