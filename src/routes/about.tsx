@@ -26,7 +26,7 @@ function About() {
         <img src={logo.url} alt="FASWA logo" className="mx-auto w-56" />
         <div className="space-y-4 text-lg text-muted-foreground">
           <h2 className="font-display text-3xl text-primary">What FASWA means</h2>
-          <p><strong className="text-primary">Fast & Affordable, Safe Ways Always.</strong> Our name represents the principles we stand for.</p>
+          <p><strong className="text-primary">Fast & Affordable, Safe Ways Always.</strong></p>
           <p>Transportation connects people to opportunities, businesses to customers, and communities to one another. We believe it should be fast, affordable, safe and accessible.</p>
         </div>
       </section>
