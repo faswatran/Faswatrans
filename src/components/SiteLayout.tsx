@@ -51,7 +51,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           <div>
             <div className="flex items-center gap-3">
               <img src={logo.url} alt="" className="h-12 w-12 rounded-md bg-card object-contain" />
-              <span className="font-display text-lg">FASWA</span>
+              <span className="font-display text-3xl font-bold md:text-4xl">FASWA</span>
             </div>
             <p className="mt-4 opacity-80">{TAGLINE}</p>
           </div>
