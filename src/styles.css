@@ -68,8 +68,8 @@
 
 :root {
   --radius: 0.75rem;
-  --font-display: "Instrument Serif", Georgia, serif;
-  --font-sans: "Work Sans", system-ui, sans-serif;
+  --font-display: "Archivo Black", system-ui, sans-serif;
+  --font-sans: "Barlow", system-ui, sans-serif;
   --background: oklch(0.985 0.005 250);
   --foreground: oklch(0.22 0.07 260);
   --card: oklch(1 0 0);
