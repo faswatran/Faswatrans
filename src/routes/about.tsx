@@ -35,7 +35,7 @@ function About() {
           <div className="rounded-2xl bg-card p-8">
             <Target className="h-8 w-8 text-accent" />
             <h3 className="mt-4 font-display text-xl text-primary">Our mission</h3>
-            <p className="mt-2 text-muted-foreground">To develop accessible, reliable, safe and technology-enabled transportation and logistics solutions that make it easier for people and businesses to move.</p>
+            <p className="mt-2 text-muted-foreground">To develop accessible, reliable, safe and technology - enabled transportation and logistics solutions that make it easier for people and businesses to move.</p>
           </div>
           <div className="rounded-2xl bg-primary p-8 text-primary-foreground">
             <Telescope className="h-8 w-8 text-accent" />
