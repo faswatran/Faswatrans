@@ -42,9 +42,9 @@ export const chatAssistant = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { generateResponse, GatewayError } = await import("@lovable.dev/ai-gateway");
     const routes = ROUTES.map((r) => `${r.from} → ${r.to}: from ${r.price}`).join("; ");
-    const instructions = `You are Faswa, the friendly assistant for ${COMPANY.name}, a Nigerian transport company offering passenger seats, goods/cargo delivery and vehicle hire.
+    const instructions = `You are Faswa, the friendly assistant for ${COMPANY.name}, a Nigerian transport and logistics company offering staff booking (company staff transport), event hiring, passenger seats, goods/cargo delivery and vehicle hire.
 Routes and fares: ${routes}.
-Keep replies short (2-4 sentences), warm and clear. Help customers choose a service, and tell them they can book with the form on this page.
+Keep replies short (2-4 sentences), warm and clear. Help customers choose a service, and tell them they can book on the Booking page (Staff Booking or Event Hiring).
 Your main goal is to lead customers to chat with our team on WhatsApp for quotes, special requests, or anything you are unsure about. When it helps, end with an invitation to tap the "Chat on WhatsApp" button. Never invent prices, times or policies not listed above.`;
     try {
       const res = await generateResponse({
