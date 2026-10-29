@@ -123,21 +123,6 @@ function Index() {
           </div>
         </div>
       </section>
-
-      <section className="bg-primary py-20 text-primary-foreground">
-        <div className="mx-auto max-w-6xl px-6">
-          <h2 className="font-display text-3xl md:text-4xl">Popular routes</h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {ROUTES.map((r) => (
-              <div key={r.from + r.to} className="flex items-center justify-between rounded-xl border border-primary-foreground/20 p-5">
-                <span className="flex items-center gap-2 font-semibold"><MapPin className="h-4 w-4 text-accent" />{r.from} → {r.to}</span>
-                <span className="font-display text-accent">{r.price}</span>
-              </div>
-            ))}
-          </div>
-          <Button asChild size="lg" variant="accent" className="mt-10"><Link to="/booking">Start a booking</Link></Button>
-        </div>
-      </section>
     </SiteLayout>
   );
 }
