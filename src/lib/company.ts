@@ -2,9 +2,9 @@
 export const COMPANY = {
   name: "FASWA Transport and Logistics Ltd",
   shortName: "FASWA",
-  whatsapp: "2348000000000", // digits only, no "+"
-  phoneDisplay: "+234 800 000 0000",
-  email: "info@faswa.example",
+  whatsapp: "2349079089094", // digits only, no "+"
+  phoneDisplay: "+234 907 908 9094",
+  email: "admin@faswatrans.com.ng",
   address: "Lagos, Nigeria",
 };
 
