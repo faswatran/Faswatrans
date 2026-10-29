@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { waLink } from "@/lib/company";
+import { NewsManager } from "@/components/NewsManager";
 import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/admin")({
