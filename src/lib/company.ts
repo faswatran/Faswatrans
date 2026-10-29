@@ -31,13 +31,13 @@ export function waLink(text: string, number = COMPANY.whatsapp) {
 
 export const TAGLINE = "Fast & Affordable, Safe Ways Always.";
 
-// Placeholder social links — replace with FASWA's real profiles.
+// Social links use FASWA's shared faswatrans profile name.
 export const SOCIALS = [
-  { key: "x", label: "X (Twitter)", handle: "@faswatrans", href: "https://x.com/faswalogistics" },
-  { key: "facebook", label: "Facebook", handle: "FASWA Transport & Logistics", href: "https://facebook.com/faswalogistics" },
-  { key: "instagram", label: "Instagram", handle: "@faswatrans", href: "https://instagram.com/faswalogistics" },
-  { key: "threads", label: "Threads", handle: "@faswatrans", href: "https://threads.net/@faswalogistics" },
-  { key: "linkedin", label: "LinkedIn", handle: "FASWA Transport & Logistics Ltd", href: "https://linkedin.com/company/faswalogistics" },
-  { key: "tiktok", label: "TikTok", handle: "@faswatrans", href: "https://tiktok.com/@faswalogistics" },
-  { key: "gmail", label: "Gmail", handle: "admin@faswatrans.com.ng", href: "mailto:faswalogistics@gmail.com" },
+  { key: "x", label: "X (Twitter)", handle: "@faswatrans", href: "https://x.com/faswatrans" },
+  { key: "facebook", label: "Facebook", handle: "FASWA Transport & Logistics", href: "https://facebook.com/faswatrans" },
+  { key: "instagram", label: "Instagram", handle: "@faswatrans", href: "https://instagram.com/faswatrans" },
+  { key: "threads", label: "Threads", handle: "@faswatrans", href: "https://www.threads.net/@faswatrans" },
+  { key: "linkedin", label: "LinkedIn", handle: "FASWA Transport & Logistics Ltd", href: "https://linkedin.com/company/faswatrans" },
+  { key: "tiktok", label: "TikTok", handle: "@faswatrans", href: "https://tiktok.com/@faswatrans" },
+  { key: "gmail", label: "Gmail", handle: "admin@faswatrans.com.ng", href: "mailto:admin@faswatrans.com.ng" },
 ] as const;
