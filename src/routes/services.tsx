@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Briefcase, Bus, Package, PartyPopper, Truck } from "lucide-react";
+import { Briefcase, Bus, MapPinned, Package, PartyPopper, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 import { HIACE_IMG } from "@/lib/fleet";
@@ -21,6 +21,7 @@ export const Route = createFileRoute("/services")({
 const ITEMS = [
   { icon: Briefcase, title: "Staff booking", text: "Reliable daily or scheduled pickups and drop-offs for your employees, with dedicated drivers." },
   { icon: PartyPopper, title: "Event hiring", text: "Comfortable buses and cars for weddings, conferences, church programmes and excursions." },
+  { icon: MapPinned, title: "Inter-state trip", text: "Safe, comfortable trips between states, with professional drivers and well-maintained vehicles." },
   { icon: Bus, title: "Passenger travel", text: "Air-conditioned coaches on major intercity routes across Nigeria." },
   { icon: Package, title: "Goods & cargo delivery", text: "Safe, tracked movement of parcels and goods between cities." },
   { icon: Truck, title: "Vehicle hire", text: "Charter a vehicle with a professional driver for any trip." },
