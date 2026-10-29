@@ -63,6 +63,30 @@ function Index() {
         </div>
       </section>
 
+      <section className="bg-primary py-20 text-primary-foreground">
+        <div className="mx-auto max-w-6xl px-6">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">Our Vision</p>
+          <h2 className="mt-2 font-display text-3xl md:text-4xl">A better way to move</h2>
+          <p className="mt-5 max-w-3xl text-lg opacity-85">
+            Transportation is more than getting from one place to another — it connects people to opportunities, businesses to customers, and communities to one another. FASWA is being built on four simple beliefs.
+          </p>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: Clock, t: "Fast", d: "Respecting people's time through efficient transportation and logistics." },
+              { icon: Wallet, t: "Affordable", d: "Working toward transportation that provides real value and stays accessible." },
+              { icon: ShieldCheck, t: "Safe", d: "Making safety and responsible service fundamental to every FASWA journey." },
+              { icon: Users, t: "Accessible", d: "Building a dependable network that people and businesses can trust to keep moving." },
+            ].map((b) => (
+              <div key={b.t} className="rounded-2xl border border-primary-foreground/20 p-6">
+                <b.icon className="h-8 w-8 text-accent" />
+                <h3 className="mt-4 font-display text-lg">{b.t}</h3>
+                <p className="mt-2 text-sm opacity-80">{b.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-6xl px-6 py-20">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">What we do</p>
         <h2 className="mt-2 font-display text-3xl text-primary md:text-4xl">Our services</h2>
