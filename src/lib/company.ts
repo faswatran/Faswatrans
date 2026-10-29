@@ -20,6 +20,7 @@ export const ROUTES = [
 export const SERVICES = [
   "Staff booking",
   "Event hiring",
+  "Inter-state trip",
   "Passenger seat",
   "Goods / cargo delivery",
   "Vehicle hire",

@@ -94,6 +94,7 @@ function Index() {
           {[
             { icon: Briefcase, title: "Staff booking", text: "Daily and scheduled transport for your company staff." },
             { icon: PartyPopper, title: "Event hiring", text: "Vehicles for weddings, conferences and outings." },
+            { icon: MapPin, title: "Inter-state trip", text: "Comfortable travel between states across Nigeria." },
             { icon: Package, title: "Logistics", text: "Move parcels, documents and goods between cities." },
           ].map((s) => (
             <div key={s.title} className="rounded-2xl border bg-card p-6 transition hover:shadow-lift">
