@@ -44,13 +44,6 @@ function Index() {
               <a href={waLink("Hello FASWA, I'd like to make an enquiry.")} target="_blank" rel="noreferrer">WhatsApp us</a>
             </Button>
           </div>
-          <div className="mt-12 flex gap-2">
-            {FLEET.map((v, i) => (
-              <button key={v.name} type="button" onClick={() => setSlide(i)} className={`rounded-full border border-on-dark/40 px-3 py-1 text-xs font-semibold transition ${i === slide ? "bg-accent" : "opacity-75 hover:opacity-100"}`}>
-                {v.name}
-              </button>
-            ))}
-          </div>
         </div>
       </section>
 
