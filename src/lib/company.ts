@@ -33,7 +33,7 @@ export const TAGLINE = "Fast & Affordable, Safe Ways Always.";
 
 // Placeholder social links — replace with FASWA's real profiles.
 export const SOCIALS = [
-  { key: "x", label: "X (Twitter)", handle: "@faswalogistics", href: "https://x.com/faswalogistics" },
+  { key: "x", label: "X (Twitter)", handle: "@faswatrans", href: "https://x.com/faswalogistics" },
   { key: "facebook", label: "Facebook", handle: "FASWA Transport & Logistics", href: "https://facebook.com/faswalogistics" },
   { key: "instagram", label: "Instagram", handle: "@faswalogistics", href: "https://instagram.com/faswalogistics" },
   { key: "threads", label: "Threads", handle: "@faswalogistics", href: "https://threads.net/@faswalogistics" },
