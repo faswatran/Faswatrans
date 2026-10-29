@@ -28,3 +28,16 @@ export const SERVICES = [
 export function waLink(text: string, number = COMPANY.whatsapp) {
   return `https://wa.me/${number.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
 }
+
+export const TAGLINE = "Fast & Affordable, Safe Ways Always.";
+
+// Placeholder social links — replace with FASWA's real profiles.
+export const SOCIALS = [
+  { key: "x", label: "X (Twitter)", handle: "@faswalogistics", href: "https://x.com/faswalogistics" },
+  { key: "facebook", label: "Facebook", handle: "FASWA Transport & Logistics", href: "https://facebook.com/faswalogistics" },
+  { key: "instagram", label: "Instagram", handle: "@faswalogistics", href: "https://instagram.com/faswalogistics" },
+  { key: "threads", label: "Threads", handle: "@faswalogistics", href: "https://threads.net/@faswalogistics" },
+  { key: "linkedin", label: "LinkedIn", handle: "FASWA Transport & Logistics Ltd", href: "https://linkedin.com/company/faswalogistics" },
+  { key: "tiktok", label: "TikTok", handle: "@faswalogistics", href: "https://tiktok.com/@faswalogistics" },
+  { key: "gmail", label: "Gmail", handle: "faswalogistics@gmail.com", href: "mailto:faswalogistics@gmail.com" },
+] as const;

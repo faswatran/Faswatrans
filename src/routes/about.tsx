@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Clock, ShieldCheck, Users } from "lucide-react";
-import logo from "@/assets/faswa-logo.png.asset.json";
+import logo from "@/assets/faswa-logo-2.jpg.asset.json";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 
 export const Route = createFileRoute("/about")({
