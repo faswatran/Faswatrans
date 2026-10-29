@@ -35,7 +35,7 @@ export const TAGLINE = "Fast & Affordable, Safe Ways Always.";
 export const SOCIALS = [
   { key: "x", label: "X (Twitter)", handle: "@faswatrans", href: "https://x.com/faswalogistics" },
   { key: "facebook", label: "Facebook", handle: "FASWA Transport & Logistics", href: "https://facebook.com/faswalogistics" },
-  { key: "instagram", label: "Instagram", handle: "@faswalogistics", href: "https://instagram.com/faswalogistics" },
+  { key: "instagram", label: "Instagram", handle: "@faswatrans", href: "https://instagram.com/faswalogistics" },
   { key: "threads", label: "Threads", handle: "@faswalogistics", href: "https://threads.net/@faswalogistics" },
   { key: "linkedin", label: "LinkedIn", handle: "FASWA Transport & Logistics Ltd", href: "https://linkedin.com/company/faswalogistics" },
   { key: "tiktok", label: "TikTok", handle: "@faswalogistics", href: "https://tiktok.com/@faswalogistics" },
