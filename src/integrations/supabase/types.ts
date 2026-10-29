@@ -65,6 +65,36 @@ export type Database = {
         }
         Relationships: []
       }
+      news_posts: {
+        Row: {
+          body: string | null
+          created_at: string
+          destination: string | null
+          hours: number | null
+          id: string
+          photo_url: string | null
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          destination?: string | null
+          hours?: number | null
+          id?: string
+          photo_url?: string | null
+          title: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          destination?: string | null
+          hours?: number | null
+          id?: string
+          photo_url?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
