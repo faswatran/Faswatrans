@@ -85,7 +85,7 @@ export function PageHero({ eyebrow, title, text, image }: { eyebrow: string; tit
     <section className="relative overflow-hidden bg-primary text-on-dark">
       {image && <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" />}
       {image && <div className="absolute inset-0 bg-hero-overlay" />}
-      <div className="relative mx-auto max-w-6xl px-6 py-24">
+      <div className="relative mx-auto max-w-6xl px-6 py-32 md:py-44">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
         <h1 className="mt-3 max-w-2xl font-display text-4xl md:text-5xl">{title}</h1>
         <p className="mt-4 max-w-xl opacity-90">{text}</p>
