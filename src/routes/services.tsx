@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Briefcase, Bus, Package, PartyPopper, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
-import { FLEET } from "@/lib/fleet";
+import { HIACE_IMG } from "@/lib/fleet";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -29,7 +29,7 @@ const ITEMS = [
 function Services() {
   return (
     <SiteLayout>
-      <PageHero image={FLEET[0].img} eyebrow="Services" title="What we do" text="From daily staff transport to big events and deliveries, FASWA keeps you moving." />
+      <PageHero image={HIACE_IMG} eyebrow="Services" title="What we do" text="From daily staff transport to big events and deliveries, FASWA keeps you moving." />
       <section className="mx-auto grid max-w-6xl gap-6 px-6 py-16 sm:grid-cols-2 lg:grid-cols-3">
         {ITEMS.map((s) => (
           <div key={s.title} className="rounded-2xl border bg-card p-6">

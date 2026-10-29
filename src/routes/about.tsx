@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Clock, ShieldCheck, Target, Telescope, Users, Wallet } from "lucide-react";
 import logo from "@/assets/faswa-logo-2.jpg.asset.json";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
-import { FLEET } from "@/lib/fleet";
+import { SIENNA_IMG } from "@/lib/fleet";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/about")({
 function About() {
   return (
     <SiteLayout>
-      <PageHero image={FLEET[1].img} eyebrow="About us" title="Building better ways to move" text="FASWA Transport & Logistics Ltd was created around a simple idea: people and businesses deserve better ways to move." />
+      <PageHero image={SIENNA_IMG} eyebrow="About us" title="Building better ways to move" text="FASWA Transport & Logistics Ltd was created around a simple idea: people and businesses deserve better ways to move." />
       <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:grid-cols-[1fr_1.5fr]">
         <img src={logo.url} alt="FASWA logo" className="mx-auto w-56" />
         <div className="space-y-4 text-lg text-muted-foreground">

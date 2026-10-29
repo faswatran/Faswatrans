@@ -3,7 +3,7 @@ import { AtSign, Facebook, Instagram, Linkedin, Mail, MapPin, MessageCircle, Mus
 import { Button } from "@/components/ui/button";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 import { COMPANY, SOCIALS, waLink } from "@/lib/company";
-import { FLEET } from "@/lib/fleet";
+import { CAMRY_IMG } from "@/lib/fleet";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -29,7 +29,7 @@ function Contact() {
   ];
   return (
     <SiteLayout>
-      <PageHero image={FLEET[2].img} eyebrow="Contact us" title="We're here to help" text="Questions, quotes or special requests — reach us any way you like." />
+      <PageHero image={CAMRY_IMG} eyebrow="Contact us" title="We're here to help" text="Questions, quotes or special requests — reach us any way you like." />
       <section className="mx-auto grid max-w-6xl gap-6 px-6 py-16 md:grid-cols-3">
         {items.map((i) => (
           <div key={i.label} className="rounded-2xl border bg-card p-6">

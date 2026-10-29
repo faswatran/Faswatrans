@@ -7,3 +7,7 @@ export const FLEET = [
   { name: "Toyota Sienna", img: sienna.url, seats: "Up to 7 passengers", use: "Family travel, airport runs and small teams" },
   { name: "Toyota Camry", img: camry.url, seats: "Up to 4 passengers", use: "Executive transport and VIP guests" },
 ];
+
+export const HIACE_IMG = hiace.url;
+export const SIENNA_IMG = sienna.url;
+export const CAMRY_IMG = camry.url;
