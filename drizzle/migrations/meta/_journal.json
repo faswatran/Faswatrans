@@ -15,6 +15,13 @@
       "when": 1793294383739,
       "tag": "0001_create_news_posts",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793294402557,
+      "tag": "0002_news_photos_storage_policies",
+      "breakpoints": true
     }
   ]
 }
