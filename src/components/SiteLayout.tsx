@@ -24,9 +24,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 border-b bg-card/95 shadow-sm backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3">
           <Link to="/" className="flex items-center gap-3">
-            <img src={logo.url} alt="FASWA logo" className="h-12 w-12 rounded-md object-contain" />
+            <img src={logo.url} alt="FASWA logo" className="h-16 w-16 rounded-md object-contain" />
             <span className="leading-tight">
-              <span className="block font-display text-3xl leading-none tracking-wide text-primary">FASWA</span>
+              <span className="block font-display text-5xl leading-none tracking-wide text-primary">FASWA</span>
               <span className="block text-sm font-bold uppercase tracking-wider text-muted-foreground">Transport and Logistics Ltd</span>
             </span>
           </Link>
