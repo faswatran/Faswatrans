@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import logo from "@/assets/faswa-logo-2.jpg.asset.json";
 import { ChatWidget } from "@/components/ChatWidget";
-import { COMPANY } from "@/lib/company";
+import { COMPANY, SOCIALS, TAGLINE } from "@/lib/company";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -15,12 +15,18 @@ const NAV = [
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col font-sans">
-      <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur">
+      <div className="hidden bg-primary text-xs text-primary-foreground md:block">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-2">
+          <span className="opacity-85">{TAGLINE}</span>
+          <span className="opacity-85">{COMPANY.phoneDisplay} · {COMPANY.email}</span>
+        </div>
+      </div>
+      <header className="sticky top-0 z-40 border-b bg-card/95 shadow-sm backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3">
           <Link to="/" className="flex items-center gap-3">
-            <img src={logo.url} alt="FASWA logo" className="h-11 w-11 object-contain" />
+            <img src={logo.url} alt="FASWA logo" className="h-12 w-12 rounded-md object-contain" />
             <span className="leading-tight">
-              <span className="block font-display text-lg text-primary">FASWA</span>
+              <span className="block font-display text-xl tracking-wide text-primary">FASWA</span>
               <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Transport and Logistics Ltd</span>
             </span>
           </Link>
@@ -40,11 +46,33 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
       <main className="flex-1">{children}</main>
-      <footer className="bg-primary py-10 text-sm text-primary-foreground">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6">
-          <p>© {new Date().getFullYear()} {COMPANY.name}</p>
-          <p className="opacity-80">{COMPANY.phoneDisplay} · {COMPANY.email}</p>
-          <Link to="/admin" className="opacity-70 hover:opacity-100">Staff login</Link>
+      <footer className="bg-primary text-sm text-primary-foreground">
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-3">
+          <div>
+            <div className="flex items-center gap-3">
+              <img src={logo.url} alt="" className="h-12 w-12 rounded-md bg-card object-contain" />
+              <span className="font-display text-lg">FASWA</span>
+            </div>
+            <p className="mt-4 opacity-80">{TAGLINE}</p>
+          </div>
+          <div>
+            <p className="font-display">Pages</p>
+            <ul className="mt-3 space-y-2 opacity-85">
+              {NAV.map((n) => <li key={n.to}><Link to={n.to} className="hover:underline">{n.label}</Link></li>)}
+            </ul>
+          </div>
+          <div>
+            <p className="font-display">Follow us</p>
+            <ul className="mt-3 grid grid-cols-2 gap-2 opacity-85">
+              {SOCIALS.map((s) => <li key={s.key}><a href={s.href} target="_blank" rel="noreferrer" className="hover:underline">{s.label}</a></li>)}
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-primary-foreground/15">
+          <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-3 px-6 py-5 opacity-75">
+            <p>© {new Date().getFullYear()} {COMPANY.name}</p>
+            <Link to="/admin" className="hover:opacity-100">Staff login</Link>
+          </div>
         </div>
       </footer>
       <ChatWidget />
@@ -52,13 +80,15 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   );
 }
 
-export function PageHero({ eyebrow, title, text }: { eyebrow: string; title: string; text: string }) {
+export function PageHero({ eyebrow, title, text, image }: { eyebrow: string; title: string; text: string; image?: string }) {
   return (
-    <section className="bg-primary py-16 text-primary-foreground">
-      <div className="mx-auto max-w-6xl px-6">
+    <section className="relative overflow-hidden bg-primary text-on-dark">
+      {image && <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" />}
+      {image && <div className="absolute inset-0 bg-hero-overlay" />}
+      <div className="relative mx-auto max-w-6xl px-6 py-24">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-        <h1 className="mt-3 font-display text-4xl md:text-5xl">{title}</h1>
-        <p className="mt-4 max-w-2xl opacity-85">{text}</p>
+        <h1 className="mt-3 max-w-2xl font-display text-4xl md:text-5xl">{title}</h1>
+        <p className="mt-4 max-w-xl opacity-90">{text}</p>
       </div>
     </section>
   );

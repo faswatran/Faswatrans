@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Briefcase, PartyPopper } from "lucide-react";
 import { BookingForm } from "@/components/BookingForm";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
+import { FLEET } from "@/lib/fleet";
 
 export const Route = createFileRoute("/booking")({
   head: () => ({
@@ -27,7 +28,7 @@ function Booking() {
   const [choice, setChoice] = useState<(typeof OPTIONS)[number]["key"]>("Staff booking");
   return (
     <SiteLayout>
-      <PageHero eyebrow="Booking" title="Book with FASWA" text="Choose what you need, send your request, and get a booking reference right away." />
+      <PageHero image={FLEET[0].img} eyebrow="Booking" title="Book with FASWA" text="Choose what you need, send your request, and get a booking reference right away." />
       <section className="mx-auto max-w-4xl px-6 py-16">
         <div className="grid gap-4 sm:grid-cols-2">
           {OPTIONS.map((o) => {

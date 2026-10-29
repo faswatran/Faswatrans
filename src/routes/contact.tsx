@@ -1,22 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { AtSign, Facebook, Instagram, Linkedin, Mail, MapPin, MessageCircle, Music2, Phone, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
-import { COMPANY, waLink } from "@/lib/company";
+import { COMPANY, SOCIALS, waLink } from "@/lib/company";
+import { FLEET } from "@/lib/fleet";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Us — FASWA Transport and Logistics Ltd" },
-      { name: "description", content: "Call, email or WhatsApp FASWA Transport and Logistics Ltd." },
+      { name: "description", content: "Reach FASWA by phone, WhatsApp, Gmail, X, Facebook, Instagram, Threads, LinkedIn or TikTok." },
       { property: "og:title", content: "Contact FASWA Transport and Logistics" },
-      { property: "og:description", content: "Reach our team by phone, email or WhatsApp." },
+      { property: "og:description", content: "Call, message or follow FASWA on social media." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Contact,
 });
+
+const ICONS = { x: Twitter, facebook: Facebook, instagram: Instagram, threads: AtSign, linkedin: Linkedin, tiktok: Music2, gmail: Mail } as const;
 
 function Contact() {
   const items = [
@@ -26,7 +29,7 @@ function Contact() {
   ];
   return (
     <SiteLayout>
-      <PageHero eyebrow="Contact us" title="We're here to help" text="Questions, quotes or special requests — reach us any way you like." />
+      <PageHero image={FLEET[2].img} eyebrow="Contact us" title="We're here to help" text="Questions, quotes or special requests — reach us any way you like." />
       <section className="mx-auto grid max-w-6xl gap-6 px-6 py-16 md:grid-cols-3">
         {items.map((i) => (
           <div key={i.label} className="rounded-2xl border bg-card p-6">
@@ -36,7 +39,26 @@ function Contact() {
           </div>
         ))}
       </section>
-      <div className="pb-20 text-center">
+      <section className="bg-secondary py-16">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="font-display text-3xl text-primary">Connect with us</h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {SOCIALS.map((s) => {
+              const Icon = ICONS[s.key];
+              return (
+                <a key={s.key} href={s.href} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-2xl border bg-card p-5 transition hover:border-accent hover:shadow-lift">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Icon className="h-5 w-5" /></span>
+                  <span className="min-w-0">
+                    <span className="block font-display text-primary">{s.label}</span>
+                    <span className="block truncate text-sm text-muted-foreground">{s.handle}</span>
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+      <div className="py-16 text-center">
         <Button asChild size="lg" variant="whatsapp">
           <a href={waLink("Hello FASWA, I'd like to make an enquiry.")} target="_blank" rel="noreferrer"><MessageCircle /> Chat on WhatsApp</a>
         </Button>
