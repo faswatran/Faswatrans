@@ -1,0 +1,1 @@
+DELETE FROM public.news_posts WHERE title = 'Test trip — wedding hire';
