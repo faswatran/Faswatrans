@@ -141,6 +141,7 @@ function Dashboard() {
           </div>
         ))}
       </div>
+      <NewsManager />
     </main>
   );
 }

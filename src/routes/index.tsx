@@ -107,6 +107,8 @@ function Index() {
         </div>
       </section>
 
+      <NewsSection />
+
       <section className="bg-secondary py-20">
         <div className="mx-auto max-w-6xl px-6">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">Our fleet</p>
