@@ -27,7 +27,7 @@ function About() {
         <div className="space-y-4 text-lg text-muted-foreground">
           <h2 className="font-display text-3xl text-primary">What FASWA means</h2>
           <p><strong className="text-primary">Fast & Affordable, Safe Ways Always.</strong></p>
-          <p>Transportation connects people to opportunities, businesses to customers, and communities to one another. We believe it should be fast, affordable, safe and accessible.</p>
+          <p>FASWA Transport &amp; Logistics Ltd was created around a straightforward idea: people and businesses deserve better ways to move. We're building around four fundamental principles — speed, affordability, safety, and reliability.</p>
         </div>
       </section>
       <section className="bg-secondary py-16">
