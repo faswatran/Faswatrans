@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Briefcase, Clock, MapPin, Package, PartyPopper, ShieldCheck, Users, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteLayout } from "@/components/SiteLayout";
+import { NewsSection } from "@/components/NewsSection";
 import { ROUTES, TAGLINE, waLink } from "@/lib/company";
 import { FLEET } from "@/lib/fleet";
 
@@ -105,6 +106,8 @@ function Index() {
           ))}
         </div>
       </section>
+
+      <NewsSection />
 
       <section className="bg-secondary py-20">
         <div className="mx-auto max-w-6xl px-6">
