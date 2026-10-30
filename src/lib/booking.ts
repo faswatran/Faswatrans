@@ -22,6 +22,7 @@ export const bookingRequestSchema = z.object({
 export function toBookingRecord(data: z.infer<typeof bookingRequestSchema>) {
   const isEvent = data.service === "Event hiring";
   const [travel_date, pickup_time] = data.pickup_at.split("T");
+  if (!travel_date || !pickup_time) throw new Error("Enter a pickup date and time.");
   return {
     service: data.service,
     full_name: `${data.service} request`,

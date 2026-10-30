@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { COMPANY, ROUTES, SERVICES } from "./company";
+import { COMPANY, ROUTES } from "./company";
 import { bookingRequestSchema, toBookingRecord } from "./booking";
 
 export const createBooking = createServerFn({ method: "POST" })
