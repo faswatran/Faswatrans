@@ -1,26 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { COMPANY, ROUTES, SERVICES } from "./company";
-
-const bookingSchema = z.object({
-  service: z.enum(SERVICES),
-  full_name: z.string().trim().min(2).max(100),
-  email: z.string().trim().email().max(200),
-  phone: z.string().trim().min(7).max(20),
-  origin: z.string().trim().min(2).max(60),
-  destination: z.string().trim().min(2).max(60),
-  travel_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  passengers: z.number().int().min(1).max(60),
-  notes: z.string().trim().max(500).optional(),
-});
+import { bookingRequestSchema, toBookingRecord } from "./booking";
 
 export const createBooking = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => bookingSchema.parse(d))
+  .inputValidator((d: unknown) => bookingRequestSchema.parse(d))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("bookings")
-      .insert({ ...data, notes: data.notes ?? null })
+      .insert(toBookingRecord(data))
       .select("reference")
       .single();
     if (error) {

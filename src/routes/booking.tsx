@@ -4,6 +4,7 @@ import { Briefcase, PartyPopper } from "lucide-react";
 import { BookingForm } from "@/components/BookingForm";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 import { HIACE_IMG } from "@/lib/fleet";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/booking")({
   head: () => ({
@@ -28,26 +29,27 @@ function Booking() {
   const [choice, setChoice] = useState<(typeof OPTIONS)[number]["key"]>("Staff booking");
   return (
     <SiteLayout>
-      <PageHero image={HIACE_IMG} eyebrow="Booking" title="Book with FASWA" text="Choose what you need, send your request, and get a booking reference right away." />
-      <section className="mx-auto max-w-4xl px-6 py-16">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <PageHero image={HIACE_IMG} eyebrow="Booking" title="Book with FASWA" text="Staff transport and event journeys." />
+      <section className="mx-auto max-w-2xl px-6 py-10 sm:py-12">
+        <div className="grid grid-cols-2 gap-2 border-b pb-5">
           {OPTIONS.map((o) => {
             const active = choice === o.key;
             return (
-              <button
+              <Button
                 key={o.key}
                 type="button"
                 onClick={() => setChoice(o.key)}
-                className={`rounded-2xl border-2 p-6 text-left transition ${active ? "border-accent bg-primary text-primary-foreground" : "bg-card hover:border-accent"}`}
+                variant={active ? "default" : "outline"}
+                aria-pressed={active}
+                className="h-12 gap-2 whitespace-normal px-2"
               >
-                <o.icon className="h-8 w-8 text-accent" />
-                <h3 className="mt-3 font-display text-xl">{o.title}</h3>
-                <p className={`mt-1 text-sm ${active ? "opacity-85" : "text-muted-foreground"}`}>{o.text}</p>
-              </button>
+                <o.icon />
+                {o.title}
+              </Button>
             );
           })}
         </div>
-        <div className="mt-8">
+        <div className="mt-6">
           <BookingForm key={choice} service={choice} />
         </div>
       </section>
