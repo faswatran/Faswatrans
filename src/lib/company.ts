@@ -27,7 +27,7 @@ export const SERVICES = [
 ] as const;
 
 export function waLink(text: string, number = COMPANY.whatsapp) {
-  return `https://wa.me/${number.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
+  return `https://api.whatsapp.com/send?phone=${number.replace(/\D/g, "")}&text=${encodeURIComponent(text)}`;
 }
 
 export const TAGLINE = "Fast & Affordable, Safe Ways Always.";
