@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { createBooking } from "@/lib/site.functions";
-import { SERVICES, waLink } from "@/lib/company";
+import { waLink } from "@/lib/company";
 
-type Service = (typeof SERVICES)[number];
+type Service = "Staff booking" | "Event hiring";
 
 export function BookingForm({ service }: { service: Service }) {
   const submit = useServerFn(createBooking);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
+  const [returnTrip, setReturnTrip] = useState(false);
   const isEvent = service === "Event hiring";
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -22,19 +23,16 @@ export function BookingForm({ service }: { service: Service }) {
     const f = new FormData(e.currentTarget);
     setBusy(true);
     try {
-      const extra = isEvent ? `Event: ${f.get("event_type") || "-"}` : `Company: ${f.get("company") || "-"}`;
-      const notes = [extra, String(f.get("notes") || "")].filter(Boolean).join("\n");
       const res = await submit({
         data: {
           service,
-          full_name: String(f.get("full_name")),
           email: String(f.get("email")),
           phone: String(f.get("phone")),
           origin: String(f.get("origin")),
-          destination: String(f.get("destination")),
-          travel_date: String(f.get("travel_date")),
-          passengers: Number(f.get("passengers") || 1),
-          notes: notes.slice(0, 500),
+          destination: isEvent ? undefined : String(f.get("destination")),
+          pickup_at: String(f.get("pickup_at")),
+          passengers: isEvent ? Number(f.get("passengers")) : undefined,
+          return_trip: isEvent && returnTrip,
         },
       });
       setDone(res.reference);
@@ -47,7 +45,7 @@ export function BookingForm({ service }: { service: Service }) {
 
   if (done)
     return (
-      <div className="rounded-2xl border bg-card p-10 text-center shadow-lift">
+      <div className="rounded-lg border bg-card p-6 text-center sm:p-10">
         <CheckCircle2 className="mx-auto h-12 w-12 text-accent" />
         <h3 className="mt-4 font-display text-2xl">Booking received!</h3>
         <p className="mt-2 text-muted-foreground">Your reference is</p>
@@ -59,26 +57,20 @@ export function BookingForm({ service }: { service: Service }) {
       </div>
     );
 
-  const today = new Date().toISOString().slice(0, 10);
   return (
-    <form key={service} onSubmit={onSubmit} className="grid gap-4 rounded-2xl border bg-card p-6 shadow-lift sm:grid-cols-2">
-      <Field name="full_name" label="Full name" />
-      <Field name="phone" label="Phone (WhatsApp)" type="tel" />
-      <Field name="email" label="Email" type="email" />
-      {isEvent ? (
-        <Field name="event_type" label="Type of event" placeholder="e.g. Wedding, conference" required={false} />
-      ) : (
-        <Field name="company" label="Company / organisation" required={false} />
-      )}
-      <Field name="origin" label={isEvent ? "Pickup location" : "From"} placeholder="e.g. Lagos" />
-      <Field name="destination" label={isEvent ? "Event venue" : "To"} placeholder="e.g. Abuja" />
-      <Field name="travel_date" label={isEvent ? "Event date" : "Date"} type="date" min={today} />
-      <Field name="passengers" label={isEvent ? "Number of guests" : "Number of staff"} type="number" min={1} defaultValue={1} />
-      <div className="sm:col-span-2">
-        <Label htmlFor="notes">Notes (optional)</Label>
-        <Textarea id="notes" name="notes" maxLength={400} className="mt-1" placeholder={isEvent ? "Vehicle type, hours needed…" : "Daily pickup times, number of trips…"} />
-      </div>
-      <Button type="submit" size="lg" disabled={busy} className="sm:col-span-2">{busy ? "Sending…" : `Request ${service.toLowerCase()}`}</Button>
+    <form key={service} onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
+      <Field name="email" label="Email (Gmail or other)" type="email" autoComplete="email" placeholder="you@gmail.com" maxLength={200} />
+      <Field name="phone" label="WhatsApp number" type="tel" autoComplete="tel" placeholder="e.g. +234 801 234 5678" minLength={7} maxLength={20} />
+      <Field name="origin" label="Pickup location" placeholder="Street, area or landmark" minLength={2} maxLength={60} />
+      <Field name="pickup_at" label="Pickup date & time" type="datetime-local" />
+      {isEvent ? <>
+        <Field name="passengers" label="Number of people" type="number" min={1} max={60} defaultValue={1} />
+        <div className="flex min-h-16 items-center gap-3 self-end rounded-md border border-input p-3">
+          <Checkbox id="return_trip" checked={returnTrip} onCheckedChange={(value) => setReturnTrip(value === true)} />
+          <Label htmlFor="return_trip" className="cursor-pointer leading-5">Include the return journey</Label>
+        </div>
+      </> : <Field name="destination" label="Staff destination" placeholder="Office address or destination" minLength={2} maxLength={60} className="sm:col-span-2" />}
+      <Button type="submit" size="lg" disabled={busy} className="mt-1 h-12 whitespace-normal sm:col-span-2">{busy ? "Sending…" : "Send booking request"}<ArrowRight /></Button>
     </form>
   );
 }
@@ -87,7 +79,7 @@ function Field({ name, label, className, required = true, ...rest }: { name: str
   return (
     <div className={className}>
       <Label htmlFor={name}>{label}</Label>
-      <Input id={name} name={name} required={required} className="mt-1" {...rest} />
+      <Input id={name} name={name} required={required} className="mt-2 h-12 min-w-0 w-full" {...rest} />
     </div>
   );
 }
