@@ -27,7 +27,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           <Link to="/" className="flex items-center gap-3">
             <img src={logo.url} alt="FASWA logo" className="h-16 w-16 rounded-md object-contain" />
             <span className="leading-tight">
-              <span className="block font-display text-5xl leading-none tracking-wide text-primary">FASWA</span>
+              <span className="block font-display text-6xl leading-none tracking-wide text-primary md:text-7xl">FASWA</span>
               <span className="block text-sm font-bold uppercase tracking-wider text-muted-foreground">Transport and Logistics Ltd</span>
             </span>
           </Link>
