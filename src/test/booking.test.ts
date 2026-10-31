@@ -28,10 +28,10 @@ describe("Short booking requests", () => {
   });
 });
 describe("Private charter and delivery", () => {
-  it("charter needs destination and people", () => {
-    expect(bookingRequestSchema.safeParse({ ...contact, service: "Private charter", passengers: 4 }).success).toBe(false);
-    const row = toBookingRecord(bookingRequestSchema.parse({ ...contact, service: "Private charter", destination: "Abuja", passengers: 4 }));
-    expect(row.passengers).toBe(4);
+  it("charter needs a vehicle and keeps it, without number of people", () => {
+    expect(bookingRequestSchema.safeParse({ ...contact, service: "Private charter", destination: "Abuja" }).success).toBe(false);
+    const row = toBookingRecord(bookingRequestSchema.parse({ ...contact, service: "Private charter", destination: "Abuja", vehicle: "Toyota Sienna" }));
+    expect(row.notes).toContain("Vehicle: Toyota Sienna");
   });
   it("delivery needs items and keeps them", () => {
     expect(bookingRequestSchema.safeParse({ ...contact, service: "Delivery", destination: "Lekki" }).success).toBe(false);
