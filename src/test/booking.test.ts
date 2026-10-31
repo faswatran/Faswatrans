@@ -27,3 +27,15 @@ describe("Short booking requests", () => {
     expect(row.notes).toContain("Journey: Outward and return");
   });
 });
+describe("Private charter and delivery", () => {
+  it("charter needs destination and people", () => {
+    expect(bookingRequestSchema.safeParse({ ...contact, service: "Private charter", passengers: 4 }).success).toBe(false);
+    const row = toBookingRecord(bookingRequestSchema.parse({ ...contact, service: "Private charter", destination: "Abuja", passengers: 4 }));
+    expect(row.passengers).toBe(4);
+  });
+  it("delivery needs items and keeps them", () => {
+    expect(bookingRequestSchema.safeParse({ ...contact, service: "Delivery", destination: "Lekki" }).success).toBe(false);
+    const row = toBookingRecord(bookingRequestSchema.parse({ ...contact, service: "Delivery", destination: "Lekki", items: "3 cartons" }));
+    expect(row.notes).toContain("Items: 3 cartons");
+  });
+});

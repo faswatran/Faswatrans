@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Briefcase, PartyPopper } from "lucide-react";
+import { Briefcase, Car, Package, PartyPopper } from "lucide-react";
 import { BookingForm } from "@/components/BookingForm";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 import { HIACE_IMG } from "@/lib/fleet";
@@ -21,17 +21,19 @@ export const Route = createFileRoute("/booking")({
 });
 
 const OPTIONS = [
-  { key: "Staff booking", icon: Briefcase, title: "Staff Booking", text: "Transport for your company staff." },
-  { key: "Event hiring", icon: PartyPopper, title: "Event Hiring", text: "Vehicles for weddings, conferences and outings." },
+  { key: "Staff booking", icon: Briefcase, title: "Staff Booking" },
+  { key: "Event hiring", icon: PartyPopper, title: "Event Hiring" },
+  { key: "Private charter", icon: Car, title: "Private Charter" },
+  { key: "Delivery", icon: Package, title: "Delivery" },
 ] as const;
 
 function Booking() {
   const [choice, setChoice] = useState<(typeof OPTIONS)[number]["key"]>("Staff booking");
   return (
     <SiteLayout>
-      <PageHero image={HIACE_IMG} eyebrow="Booking" title="Book with FASWA" text="Staff transport and event journeys." />
+      <PageHero image={HIACE_IMG} eyebrow="Booking" title="Book with FASWA" text="Staff transport, events, private charters and deliveries." />
       <section className="mx-auto max-w-2xl px-6 py-10 sm:py-12">
-        <div className="grid grid-cols-2 gap-2 border-b pb-5">
+        <div className="grid grid-cols-2 gap-2 border-b pb-5 sm:grid-cols-4">
           {OPTIONS.map((o) => {
             const active = choice === o.key;
             return (
