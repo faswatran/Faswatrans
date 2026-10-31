@@ -67,7 +67,7 @@ export function BookingForm({ service }: { service: BookingService }) {
       <Field name="phone" label="WhatsApp number" type="tel" autoComplete="tel" placeholder="e.g. +234 801 234 5678" minLength={7} maxLength={20} />
       <Field name="origin" label="Pickup location" placeholder="Street, area or landmark" minLength={2} maxLength={60} />
       <Field name="pickup_at" label="Pickup date & time" type="datetime-local" />
-      {!isEvent && <Field name="destination" label={destLabel} placeholder={isDelivery ? "Where should we deliver?" : "Address or destination"} minLength={2} maxLength={60} className={hasPeople ? undefined : "sm:col-span-2"} />}
+      {!isEvent && <Field name="destination" label={destLabel} placeholder={isDelivery ? "Where should we deliver?" : "Address or destination"} minLength={2} maxLength={60} className={hasPeople ? "" : "sm:col-span-2"} />}
       {isDelivery && <Field name="items" label="What are we delivering?" placeholder="e.g. 3 cartons, documents" minLength={2} maxLength={120} className="sm:col-span-2" />}
       {hasPeople && <>
         <Field name="passengers" label="Number of people" type="number" min={1} max={60} defaultValue={1} />
