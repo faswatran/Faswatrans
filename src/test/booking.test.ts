@@ -34,8 +34,10 @@ describe("Private charter and delivery", () => {
     expect(row.notes).toContain("Vehicle: Toyota Sienna");
   });
   it("delivery needs items and keeps them", () => {
-    expect(bookingRequestSchema.safeParse({ ...contact, service: "Delivery", destination: "Lekki" }).success).toBe(false);
-    const row = toBookingRecord(bookingRequestSchema.parse({ ...contact, service: "Delivery", destination: "Lekki", items: "3 cartons" }));
+    const photo = { type: "image/jpeg" as const, data: "aGVsbG8gd29ybGQ=" };
+    expect(bookingRequestSchema.safeParse({ ...contact, service: "Delivery", destination: "Lekki", photo }).success).toBe(false);
+    expect(bookingRequestSchema.safeParse({ ...contact, service: "Delivery", destination: "Lekki", items: "3 cartons" }).success).toBe(false);
+    const row = toBookingRecord(bookingRequestSchema.parse({ ...contact, service: "Delivery", destination: "Lekki", items: "3 cartons", photo }));
     expect(row.notes).toContain("Items: 3 cartons");
   });
 });
