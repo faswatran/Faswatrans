@@ -15,6 +15,10 @@ export const bookingRequestSchema = z.object({
   return_trip: z.boolean().default(false),
   items: z.string().trim().max(120).optional(),
   vehicle: z.enum(CHARTER_VEHICLES).optional(),
+  photo: z.object({
+    type: z.enum(["image/jpeg", "image/png", "image/webp"]),
+    data: z.string().min(10).max(8_000_000), // base64, about 6MB
+  }).optional(),
 }).superRefine((data, ctx) => {
   const needsDestination = data.service !== "Event hiring";
   if (needsDestination && (!data.destination || data.destination.length < 2)) {
@@ -28,6 +32,9 @@ export const bookingRequestSchema = z.object({
   }
   if (data.service === "Delivery" && (!data.items || data.items.length < 2)) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["items"], message: "Describe what we are delivering." });
+  }
+  if (data.service === "Delivery" && !data.photo) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["photo"], message: "Add a photo of the item." });
   }
 });
 

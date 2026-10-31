@@ -7,9 +7,21 @@ export const createBooking = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => bookingRequestSchema.parse(d))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    let item_photo: string | null = null;
+    if (data.service === "Delivery" && data.photo) {
+      const bytes = Uint8Array.from(atob(data.photo.data), (c) => c.charCodeAt(0));
+      const ext = data.photo.type.split("/")[1];
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const up = await supabaseAdmin.storage.from("delivery-photos").upload(path, bytes, { contentType: data.photo.type });
+      if (up.error) {
+        console.error(up.error);
+        throw new Error("Could not save the photo");
+      }
+      item_photo = path;
+    }
     const { data: row, error } = await supabaseAdmin
       .from("bookings")
-      .insert(toBookingRecord(data))
+      .insert({ ...toBookingRecord(data), item_photo })
       .select("reference")
       .single();
     if (error) {

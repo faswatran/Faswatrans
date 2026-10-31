@@ -125,6 +125,7 @@ function Dashboard() {
               <p className="text-sm text-muted-foreground">{b.service} · {b.travel_date}{b.service === "Event hiring" ? ` · ${b.passengers} people` : ""}</p>
               <p className="text-sm">{b.full_name.endsWith(" request") ? "" : `${b.full_name} · `}{b.phone} · {b.email}</p>
               {b.notes && <p className="mt-1 text-sm italic text-muted-foreground">{b.notes}</p>}
+              {b.item_photo && <ItemPhoto path={b.item_photo} />}
             </div>
             <Badge variant={b.status === "approved" ? "default" : b.status === "declined" ? "destructive" : "secondary"}>{b.status}</Badge>
             {b.status === "pending" && (
@@ -153,5 +154,18 @@ function approvalMsg(b: Booking) {
   return waLink(
     `${greeting}, your FASWA booking #${b.reference} (${journey} on ${b.travel_date}) has been APPROVED. Thank you for choosing FASWA Transportation!`,
     phone,
+  );
+}
+
+function ItemPhoto({ path }: { path: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    supabase.storage.from("delivery-photos").createSignedUrl(path, 3600).then(({ data }) => setUrl(data?.signedUrl ?? null));
+  }, [path]);
+  if (!url) return null;
+  return (
+    <a href={url} target="_blank" rel="noreferrer" className="mt-2 inline-block">
+      <img src={url} alt="Item to deliver" className="h-28 rounded-md border object-cover" />
+    </a>
   );
 }
