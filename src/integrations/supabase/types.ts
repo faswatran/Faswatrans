@@ -22,6 +22,7 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          item_photo: string | null
           notes: string | null
           origin: string
           passengers: number
@@ -38,6 +39,7 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          item_photo?: string | null
           notes?: string | null
           origin: string
           passengers?: number
@@ -54,6 +56,7 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          item_photo?: string | null
           notes?: string | null
           origin?: string
           passengers?: number
