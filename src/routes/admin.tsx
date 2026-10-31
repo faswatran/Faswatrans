@@ -122,7 +122,7 @@ function Dashboard() {
           <div key={b.id} className="flex flex-wrap items-center gap-4 rounded-xl border bg-card p-5">
             <div className="min-w-48 flex-1">
               <p className="font-display">{b.origin} → {b.destination} <span className="text-sm text-muted-foreground">#{b.reference}</span></p>
-              <p className="text-sm text-muted-foreground">{b.service} · {b.travel_date}{b.notes?.includes("Staff count: to be confirmed") ? "" : ` · ${b.passengers} pax/items`}</p>
+              <p className="text-sm text-muted-foreground">{b.service} · {b.travel_date}{b.service === "Event hiring" ? ` · ${b.passengers} people` : ""}</p>
               <p className="text-sm">{b.full_name.endsWith(" request") ? "" : `${b.full_name} · `}{b.phone} · {b.email}</p>
               {b.notes && <p className="mt-1 text-sm italic text-muted-foreground">{b.notes}</p>}
             </div>

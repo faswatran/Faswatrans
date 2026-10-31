@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { createBooking } from "@/lib/site.functions";
 import { waLink } from "@/lib/company";
-import type { BookingService } from "@/lib/booking";
+import { CHARTER_VEHICLES, type BookingService } from "@/lib/booking";
 
 export function BookingForm({ service }: { service: BookingService }) {
   const submit = useServerFn(createBooking);
@@ -18,7 +18,8 @@ export function BookingForm({ service }: { service: BookingService }) {
   const isEvent = service === "Event hiring";
   const isCharter = service === "Private charter";
   const isDelivery = service === "Delivery";
-  const hasPeople = isEvent || isCharter;
+  const hasReturn = isEvent || isCharter;
+  const [vehicle, setVehicle] = useState<(typeof CHARTER_VEHICLES)[number]>("Toyota Camry");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,8 +34,9 @@ export function BookingForm({ service }: { service: BookingService }) {
           origin: String(f.get("origin")),
           destination: isEvent ? undefined : String(f.get("destination")),
           pickup_at: String(f.get("pickup_at")),
-          passengers: hasPeople ? Number(f.get("passengers")) : undefined,
-          return_trip: hasPeople && returnTrip,
+          passengers: isEvent ? Number(f.get("passengers")) : undefined,
+          return_trip: hasReturn && returnTrip,
+          vehicle: isCharter ? vehicle : undefined,
           items: isDelivery ? String(f.get("items")) : undefined,
         },
       });
@@ -67,10 +69,20 @@ export function BookingForm({ service }: { service: BookingService }) {
       <Field name="phone" label="WhatsApp number" type="tel" autoComplete="tel" placeholder="e.g. +234 801 234 5678" minLength={7} maxLength={20} />
       <Field name="origin" label="Pickup location" placeholder="Street, area or landmark" minLength={2} maxLength={60} />
       <Field name="pickup_at" label="Pickup date & time" type="datetime-local" />
-      {!isEvent && <Field name="destination" label={destLabel} placeholder={isDelivery ? "Where should we deliver?" : "Address or destination"} minLength={2} maxLength={60} className={hasPeople ? "" : "sm:col-span-2"} />}
+      {!isEvent && <Field name="destination" label={destLabel} placeholder={isDelivery ? "Where should we deliver?" : "Address or destination"} minLength={2} maxLength={60} className={isEvent ? "" : "sm:col-span-2"} />}
       {isDelivery && <Field name="items" label="What are we delivering?" placeholder="e.g. 3 cartons, documents" minLength={2} maxLength={120} className="sm:col-span-2" />}
-      {hasPeople && <>
-        <Field name="passengers" label="Number of people" type="number" min={1} max={60} defaultValue={1} />
+      {isCharter && (
+        <fieldset className="sm:col-span-2">
+          <legend className="text-sm font-medium">Choose your vehicle</legend>
+          <div className="mt-2 grid grid-cols-3 gap-2">
+            {CHARTER_VEHICLES.map((v) => (
+              <Button key={v} type="button" variant={vehicle === v ? "default" : "outline"} aria-pressed={vehicle === v} onClick={() => setVehicle(v)} className="h-12 whitespace-normal px-2">{v.replace("Toyota ", "")}</Button>
+            ))}
+          </div>
+        </fieldset>
+      )}
+      {hasReturn && <>
+        {isEvent && <Field name="passengers" label="Number of people" type="number" min={1} max={60} defaultValue={1} />}
         <div className={`flex min-h-16 items-center gap-3 self-end rounded-md border border-input p-3 ${isCharter ? "sm:col-span-2" : ""}`}>
           <Checkbox id="return_trip" checked={returnTrip} onCheckedChange={(value) => setReturnTrip(value === true)} />
           <Label htmlFor="return_trip" className="cursor-pointer leading-5">Include the return journey</Label>
