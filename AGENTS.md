@@ -12,3 +12,4 @@
 - Company contact details, routes and fares live in src/lib/company.ts; the AI assistant prompt reads from it, so edit there only.
 - Bookings are inserted via a server function with the admin client; staff read/approve via RLS using has_role (first signup becomes admin).
 - Short booking requests are validated and adapted in src/lib/booking.ts to existing records; pickup time and journey type use notes, and uncollected names/destinations are explicitly marked so no customer details are invented.
+- Public delivery tracking goes through a server function that returns only progress fields (never contact details or addresses); booking progress is stored on the booking row as a tracking list.
