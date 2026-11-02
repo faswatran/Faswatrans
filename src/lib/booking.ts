@@ -61,3 +61,37 @@ export function toBookingRecord(data: z.infer<typeof bookingRequestSchema>) {
     notes: [`Pickup time: ${pickup_time} (local time at pickup)`, extra].join("\n"),
   };
 }
+
+// Delivery tracking steps after approval, in order.
+export const DELIVERY_STAGES = [
+  { key: "picked_up", label: "Picked up" },
+  { key: "in_transit", label: "On the way" },
+  { key: "delivered", label: "Delivered" },
+] as const;
+export type DeliveryStage = (typeof DELIVERY_STAGES)[number]["key"];
+export type TrackingEntry = { stage: DeliveryStage; at: string };
+
+export function parseTracking(value: unknown): TrackingEntry[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((e): e is TrackingEntry =>
+    !!e && typeof e === "object" && DELIVERY_STAGES.some((s) => s.key === (e as TrackingEntry).stage) && typeof (e as TrackingEntry).at === "string");
+}
+
+export function nextDeliveryStage(tracking: TrackingEntry[]) {
+  return DELIVERY_STAGES.find((s) => !tracking.some((t) => t.stage === s.key)) ?? null;
+}
+
+export const normalizeReference = (code: string) => code.trim().replace(/^#/, "").toUpperCase();
+
+export function deliveryUpdateText(stage: DeliveryStage, reference: string, trackUrl: string) {
+  const line =
+    stage === "picked_up" ? "has been picked up"
+    : stage === "in_transit" ? "is on the way"
+    : "has been delivered. Thank you for trusting FASWA";
+  return `Hello, your FASWA delivery #${reference} ${line}. Track it anytime with your code ${reference}: ${trackUrl}`;
+}
+
+export function appreciationText(service: string, reference: string) {
+  const kind = service === "Event hiring" ? "event trip" : "private charter";
+  return `Hello, thank you for riding with FASWA! Your ${kind} #${reference} is complete. We truly appreciate you choosing FASWA Transport and Logistics Ltd and look forward to moving you again. Fast & Affordable, Safe Ways Always.`;
+}

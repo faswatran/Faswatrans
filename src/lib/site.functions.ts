@@ -66,3 +66,33 @@ Your main goal is to lead customers to chat with our team on WhatsApp for quotes
       return { reply: "I'm having trouble right now. Please tap **Chat on WhatsApp** to reach our team." };
     }
   });
+
+// Public delivery tracking by booking code. Returns only progress, never contact details or addresses.
+export const trackDelivery = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => z.object({ code: z.string().trim().min(4).max(12) }).parse(d))
+  .handler(async ({ data }) => {
+    const { normalizeReference, parseTracking } = await import("./booking");
+    const code = normalizeReference(data.code);
+    if (!/^[A-Z0-9]{4,12}$/.test(code)) return { found: false as const };
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
+      .from("bookings")
+      .select("reference, service, status, travel_date, created_at, approved_at, tracking")
+      .eq("reference", code)
+      .eq("service", "Delivery")
+      .maybeSingle();
+    if (error) {
+      console.error(error);
+      throw new Error("Could not look up that code");
+    }
+    if (!row) return { found: false as const };
+    return {
+      found: true as const,
+      reference: row.reference,
+      status: row.status,
+      pickup_date: row.travel_date,
+      booked_at: row.created_at,
+      approved_at: row.approved_at,
+      tracking: parseTracking(row.tracking),
+    };
+  });
