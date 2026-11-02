@@ -17,6 +17,7 @@ export type Database = {
       bookings: {
         Row: {
           approved_at: string | null
+          completed_at: string | null
           created_at: string
           destination: string
           email: string
@@ -30,10 +31,12 @@ export type Database = {
           reference: string
           service: string
           status: string
+          tracking: Json
           travel_date: string
         }
         Insert: {
           approved_at?: string | null
+          completed_at?: string | null
           created_at?: string
           destination: string
           email: string
@@ -47,10 +50,12 @@ export type Database = {
           reference?: string
           service: string
           status?: string
+          tracking?: Json
           travel_date: string
         }
         Update: {
           approved_at?: string | null
+          completed_at?: string | null
           created_at?: string
           destination?: string
           email?: string
@@ -64,6 +69,7 @@ export type Database = {
           reference?: string
           service?: string
           status?: string
+          tracking?: Json
           travel_date?: string
         }
         Relationships: []
