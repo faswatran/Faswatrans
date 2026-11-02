@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { Link } from "@tanstack/react-router";
 import { ArrowRight, Camera, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,10 +62,13 @@ export function BookingForm({ service }: { service: BookingService }) {
         <h3 className="mt-4 font-display text-2xl">Booking received!</h3>
         <p className="mt-2 text-muted-foreground">Your reference is</p>
         <p className="mt-1 font-display text-3xl text-primary">{done}</p>
-        <p className="mt-4 text-muted-foreground">We'll contact you once it's approved.</p>
-        <Button asChild variant="whatsapp" className="mt-6">
-          <a href={waLink(`Hello FASWA, I just booked. My reference is ${done}.`)} target="_blank" rel="noreferrer">Follow up on WhatsApp</a>
-        </Button>
+        <p className="mt-4 text-muted-foreground">{isDelivery ? "Keep this code to track your delivery. We'll contact you once it's approved." : "We'll contact you once it's approved."}</p>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          {isDelivery && <Button asChild variant="outline"><Link to="/track" search={{ code: done }}>Track delivery</Link></Button>}
+          <Button asChild variant="whatsapp">
+            <a href={waLink(`Hello FASWA, I just booked. My reference is ${done}.`)} target="_blank" rel="noreferrer">Follow up on WhatsApp</a>
+          </Button>
+        </div>
       </div>
     );
 

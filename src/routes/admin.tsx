@@ -2,13 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
-import { MessageCircle } from "lucide-react";
+import { Mail, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { waLink } from "@/lib/company";
+import { appreciationText, deliveryUpdateText, nextDeliveryStage, parseTracking } from "@/lib/booking";
 import { NewsManager } from "@/components/NewsManager";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -112,6 +113,39 @@ function Dashboard() {
     load();
   }
 
+  async function advanceDelivery(b: Booking) {
+    const tracking = parseTracking(b.tracking);
+    const next = nextDeliveryStage(tracking);
+    if (!next) return;
+    const now = new Date().toISOString();
+    const done = next.key === "delivered";
+    const { error } = await supabase
+      .from("bookings")
+      .update({ tracking: [...tracking, { stage: next.key, at: now }], ...(done ? { status: "completed", completed_at: now } : {}) })
+      .eq("id", b.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(`Delivery ${b.reference}: ${next.label}`);
+    window.open(waLink(deliveryUpdateText(next.key, b.reference, trackUrl(b)), customerPhone(b)), "_blank");
+    load();
+  }
+
+  async function finishTrip(b: Booking) {
+    const { error } = await supabase
+      .from("bookings")
+      .update({ status: "completed", completed_at: new Date().toISOString() })
+      .eq("id", b.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(`Booking ${b.reference} finished`);
+    window.open(waLink(appreciationText(b.service, b.reference), customerPhone(b)), "_blank");
+    load();
+  }
+
   if (!rows) return <p className="p-10 text-center text-muted-foreground">Loading…</p>;
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
@@ -127,17 +161,42 @@ function Dashboard() {
               {b.notes && <p className="mt-1 text-sm italic text-muted-foreground">{b.notes}</p>}
               {b.item_photo && <ItemPhoto path={b.item_photo} />}
             </div>
-            <Badge variant={b.status === "approved" ? "default" : b.status === "declined" ? "destructive" : "secondary"}>{b.status}</Badge>
+            <Badge variant={b.status === "approved" ? "default" : b.status === "declined" ? "destructive" : b.status === "completed" ? "outline" : "secondary"}>{b.status}</Badge>
             {b.status === "pending" && (
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => setStatus(b, "approved")}>Approve</Button>
                 <Button size="sm" variant="outline" onClick={() => setStatus(b, "declined")}>Decline</Button>
               </div>
             )}
+            {b.service === "Delivery" && b.status !== "pending" && b.status !== "declined" && (
+              <p className="w-full text-sm text-muted-foreground">Tracking: {parseTracking(b.tracking).map((t) => t.stage.replace("_", " ")).join(" → ") || "approved, waiting for pickup"}</p>
+            )}
             {b.status === "approved" && (
-              <Button asChild size="sm" variant="whatsapp">
-                <a href={approvalMsg(b)} target="_blank" rel="noreferrer"><MessageCircle /> Send confirmation</a>
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                {b.service === "Delivery" && (() => {
+                  const next = nextDeliveryStage(parseTracking(b.tracking));
+                  return next && <Button size="sm" onClick={() => advanceDelivery(b)}>Mark {next.label.toLowerCase()}</Button>;
+                })()}
+                {(b.service === "Event hiring" || b.service === "Private charter") && (
+                  <Button size="sm" onClick={() => finishTrip(b)}>Mark finished</Button>
+                )}
+                <Button asChild size="sm" variant="whatsapp">
+                  <a href={approvalMsg(b)} target="_blank" rel="noreferrer"><MessageCircle /> Send confirmation</a>
+                </Button>
+                <Button asChild size="sm" variant="outline">
+                  <a href={emailLink(b, "approved")}><Mail /> Email</a>
+                </Button>
+              </div>
+            )}
+            {b.status === "completed" && (
+              <div className="flex flex-wrap gap-2">
+                <Button asChild size="sm" variant="whatsapp">
+                  <a href={waLink(finalText(b), customerPhone(b))} target="_blank" rel="noreferrer"><MessageCircle /> Resend message</a>
+                </Button>
+                <Button asChild size="sm" variant="outline">
+                  <a href={emailLink(b, "completed")}><Mail /> Email</a>
+                </Button>
+              </div>
             )}
           </div>
         ))}
@@ -147,12 +206,32 @@ function Dashboard() {
   );
 }
 
+function customerPhone(b: Booking) {
+  return b.phone.replace(/\D/g, "").replace(/^0/, "234");
+}
+
+function trackUrl(b: Booking) {
+  return `${window.location.origin}/track?code=${b.reference}`;
+}
+
+function finalText(b: Booking) {
+  return b.service === "Delivery" ? deliveryUpdateText("delivered", b.reference, trackUrl(b)) : appreciationText(b.service, b.reference);
+}
+
+function emailLink(b: Booking, kind: "approved" | "completed") {
+  const subject = kind === "approved" ? `Your FASWA booking #${b.reference} is approved` : `Thank you — FASWA booking #${b.reference}`;
+  const body = kind === "approved"
+    ? `Hello, your FASWA booking #${b.reference} has been APPROVED.${b.service === "Delivery" ? ` Track your delivery here: ${trackUrl(b)}` : ""}`
+    : finalText(b);
+  return `mailto:${b.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 function approvalMsg(b: Booking) {
-  const phone = b.phone.replace(/\D/g, "").replace(/^0/, "234");
+  const phone = customerPhone(b);
   const greeting = b.full_name.endsWith(" request") ? "Hello" : `Hello ${b.full_name}`;
   const journey = b.destination === "To be confirmed" ? `pickup at ${b.origin}` : `${b.origin} → ${b.destination}`;
   return waLink(
-    `${greeting}, your FASWA booking #${b.reference} (${journey} on ${b.travel_date}) has been APPROVED. Thank you for choosing FASWA Transportation!`,
+    `${greeting}, your FASWA booking #${b.reference} (${journey} on ${b.travel_date}) has been APPROVED.${b.service === "Delivery" ? ` Track your delivery with code ${b.reference}: ${trackUrl(b)}` : ""} Thank you for choosing FASWA Transportation!`,
     phone,
   );
 }

@@ -16,6 +16,7 @@ import { Route as BookingRouteImport } from './routes/booking'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as InvestorRouteImport } from './routes/investor'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as TrackRouteImport } from './routes/track'
 import { Route as ApiPublicNewsPhotoSplatRouteImport } from './routes/api/public/news-photo/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,11 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNewsPhotoSplatRoute = ApiPublicNewsPhotoSplatRouteImport.update({
   id: '/api/public/news-photo/$',
   path: '/api/public/news-photo/$',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/investor': typeof InvestorRoute
   '/services': typeof ServicesRoute
+  '/track': typeof TrackRoute
   '/api/public/news-photo/$': typeof ApiPublicNewsPhotoSplatRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/investor': typeof InvestorRoute
   '/services': typeof ServicesRoute
+  '/track': typeof TrackRoute
   '/api/public/news-photo/$': typeof ApiPublicNewsPhotoSplatRoute
 }
 export interface FileRoutesById {
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/investor': typeof InvestorRoute
   '/services': typeof ServicesRoute
+  '/track': typeof TrackRoute
   '/api/public/news-photo/$': typeof ApiPublicNewsPhotoSplatRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/investor'
     | '/services'
+    | '/track'
     | '/api/public/news-photo/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/investor'
     | '/services'
+    | '/track'
     | '/api/public/news-photo/$'
   id:
     | '__root__'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/investor'
     | '/services'
+    | '/track'
     | '/api/public/news-photo/$'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   InvestorRoute: typeof InvestorRoute
   ServicesRoute: typeof ServicesRoute
+  TrackRoute: typeof TrackRoute
   ApiPublicNewsPhotoSplatRoute: typeof ApiPublicNewsPhotoSplatRoute
 }
 
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/news-photo/$': {
       id: '/api/public/news-photo/$'
       path: '/api/public/news-photo/$'
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   InvestorRoute: InvestorRoute,
   ServicesRoute: ServicesRoute,
+  TrackRoute: TrackRoute,
   ApiPublicNewsPhotoSplatRoute: ApiPublicNewsPhotoSplatRoute,
 }
 export const routeTree = rootRouteImport
