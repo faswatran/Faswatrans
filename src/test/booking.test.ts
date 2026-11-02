@@ -41,3 +41,15 @@ describe("Private charter and delivery", () => {
     expect(row.notes).toContain("Items: 3 cartons");
   });
 });
+import { nextDeliveryStage, normalizeReference, parseTracking } from "@/lib/booking";
+describe("Delivery tracking", () => {
+  it("moves through picked up, on the way, delivered in order", () => {
+    expect(nextDeliveryStage([])?.key).toBe("picked_up");
+    expect(nextDeliveryStage([{ stage: "picked_up", at: "x" }])?.key).toBe("in_transit");
+    expect(nextDeliveryStage([{ stage: "picked_up", at: "x" }, { stage: "in_transit", at: "y" }])?.key).toBe("delivered");
+    expect(nextDeliveryStage(parseTracking([{ stage: "picked_up", at: "x" }, { stage: "in_transit", at: "y" }, { stage: "delivered", at: "z" }]))).toBeNull();
+  });
+  it("accepts the code typed with a # or lowercase", () => {
+    expect(normalizeReference(" #a1b2c3 ")).toBe("A1B2C3");
+  });
+});
