@@ -1,3 +1,4 @@
 - [ ] Simplify staff and event booking forms with pickup date/time and event return-trip choice.
 - [ ] Preserve booking submission and staff review with the new details.
 - [ ] Test both booking flows and check desktop/mobile layout.
+- [ ] Approve button sends approval message automatically to customer WhatsApp and email (all four booking types). Blocked on: WhatsApp Business connection (Meta login) and email domain setup.
