@@ -43,6 +43,13 @@
       "when": 1793618598652,
       "tag": "0005_booking_tracking",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793698838248,
+      "tag": "0006_create_investors",
+      "breakpoints": true
     }
   ]
 }
