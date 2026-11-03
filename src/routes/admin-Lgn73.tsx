@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
-import { ChevronDown, Mail, MessageCircle } from "lucide-react";
+import { ChevronDown, Mail, MessageCircle, Search } from "lucide-react";
+import { InvestorManager } from "@/components/InvestorManager";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -98,6 +99,7 @@ function fmtPickup(b: Booking) {
 
 function Dashboard() {
   const [rows, setRows] = useState<Booking[] | null>(null);
+  const [query, setQuery] = useState("");
   const load = useCallback(async () => {
     const { data, error } = await supabase.from("bookings").select("*").order("created_at", { ascending: false });
     if (error) toast.error(error.message);
@@ -157,10 +159,50 @@ function Dashboard() {
     rows.filter((b) => (!service || b.service === service) && (!group || orderGroup(b.status) === group)).length;
   const actions = { onStatus: setStatus, onAdvance: advanceDelivery, onFinish: finishTrip };
 
+  const q = query.trim().toLowerCase();
+  const results = q
+    ? rows.filter((b) =>
+        [b.reference, b.full_name, b.phone, b.email, b.origin, b.destination, b.service, b.status, b.notes ?? ""]
+          .some((v) => v.toLowerCase().includes(q)),
+      )
+    : [];
+
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
+      <Tabs defaultValue="orders">
+        <TabsList className="h-auto">
+          <TabsTrigger value="orders" className="px-5 py-2 text-base">Orders</TabsTrigger>
+          <TabsTrigger value="news" className="px-5 py-2 text-base">News</TabsTrigger>
+          <TabsTrigger value="investors" className="px-5 py-2 text-base">Investors</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="news" className="mt-2"><NewsManager /></TabsContent>
+        <TabsContent value="investors" className="mt-2"><InvestorManager /></TabsContent>
+
+        <TabsContent value="orders" className="mt-8">
       <h1 className="font-display text-3xl">Orders</h1>
       {rows.length === 0 && <p className="mt-6 text-muted-foreground">No bookings yet — or your account isn't a staff admin.</p>}
+      <div className="relative mt-6">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search all orders — booking code, name, phone, email, place…"
+          className="pl-9"
+          aria-label="Search orders"
+        />
+      </div>
+      {q ? (
+        <section className="mt-6">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-xl">Search results <span className="text-base text-muted-foreground">({results.length})</span></h2>
+            <Button size="sm" variant="ghost" onClick={() => setQuery("")}>Clear search</Button>
+          </div>
+          <div className="mt-3">
+            <OrderList items={results} empty="No orders match your search." showService {...actions} />
+          </div>
+        </section>
+      ) : (<>
       <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-5">
         {SERVICE_TABS.map((t) => (
           <div key={t.key} className="rounded-xl border bg-card p-4">
@@ -228,7 +270,9 @@ function Dashboard() {
           </Tabs>
         </TabsContent>
       </Tabs>
-      <NewsManager />
+      </>)}
+        </TabsContent>
+      </Tabs>
     </main>
   );
 }
