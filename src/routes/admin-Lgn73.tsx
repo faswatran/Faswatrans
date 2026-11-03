@@ -13,7 +13,7 @@ import { appreciationText, deliveryUpdateText, nextDeliveryStage, parseTracking 
 import { NewsManager } from "@/components/NewsManager";
 import type { Tables } from "@/integrations/supabase/types";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/admin-Lgn73")({
   head: () => ({
     meta: [
       { title: "Staff dashboard — FASWA Transportation" },

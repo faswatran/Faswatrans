@@ -157,3 +157,6 @@
 
 @utility bg-hero-overlay { background-image: var(--hero-overlay); }
 @utility shadow-lift { box-shadow: var(--shadow-lift); }
+
+/* Hide third-party hosting badges (e.g. "Powered by Netlify") if a host injects one. */
+#netlify-badge, .netlify-badge, a[href*="netlify.com"][class*="badge"], [data-netlify-badge] { display: none !important; }

@@ -73,7 +73,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         <div className="border-t border-primary-foreground/15">
           <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-3 px-6 py-5 opacity-75">
             <p>© {new Date().getFullYear()} {COMPANY.name}</p>
-            <Link to="/admin" className="hover:opacity-100">Staff login</Link>
           </div>
         </div>
       </footer>
