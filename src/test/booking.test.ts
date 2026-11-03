@@ -53,3 +53,17 @@ describe("Delivery tracking", () => {
     expect(normalizeReference(" #a1b2c3 ")).toBe("A1B2C3");
   });
 });
+
+import { orderGroup, pickupTimeFromNotes } from "@/lib/booking";
+describe("staff dashboard order lists", () => {
+  it("puts new requests in Pending, approved in In progress, completed in Finished", () => {
+    expect(orderGroup("pending")).toBe("pending");
+    expect(orderGroup("approved")).toBe("active");
+    expect(orderGroup("completed")).toBe("finished");
+    expect(orderGroup("declined")).toBe("declined");
+  });
+  it("reads the pickup time saved with the booking", () => {
+    expect(pickupTimeFromNotes("Pickup time: 08:30 (local time at pickup)\nJourney: One way")).toBe("08:30");
+    expect(pickupTimeFromNotes(null)).toBeNull();
+  });
+});

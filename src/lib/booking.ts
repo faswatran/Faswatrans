@@ -95,3 +95,16 @@ export function appreciationText(service: string, reference: string) {
   const kind = service === "Event hiring" ? "event trip" : "private charter";
   return `Hello, thank you for riding with FASWA! Your ${kind} #${reference} is complete. We truly appreciate you choosing FASWA Transport and Logistics Ltd and look forward to moving you again. Fast & Affordable, Safe Ways Always.`;
 }
+
+// Staff dashboard grouping: which list a booking belongs in.
+export type OrderGroup = "pending" | "active" | "finished" | "declined";
+export function orderGroup(status: string): OrderGroup {
+  if (status === "approved") return "active";
+  if (status === "completed") return "finished";
+  if (status === "declined") return "declined";
+  return "pending";
+}
+
+export function pickupTimeFromNotes(notes: string | null | undefined) {
+  return notes?.match(/Pickup time: (\d{2}:\d{2})/)?.[1] ?? null;
+}

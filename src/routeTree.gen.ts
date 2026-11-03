@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdminLgn73RouteImport } from './routes/admin-Lgn73'
 import { Route as BookingRouteImport } from './routes/booking'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as InvestorRouteImport } from './routes/investor'
@@ -29,9 +29,9 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const AdminLgn73Route = AdminLgn73RouteImport.update({
+  id: '/admin-Lgn73',
+  path: '/admin-Lgn73',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookingRoute = BookingRouteImport.update({
@@ -68,7 +68,7 @@ const ApiPublicNewsPhotoSplatRoute = ApiPublicNewsPhotoSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin-Lgn73': typeof AdminLgn73Route
   '/booking': typeof BookingRoute
   '/contact': typeof ContactRoute
   '/investor': typeof InvestorRoute
@@ -79,7 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin-Lgn73': typeof AdminLgn73Route
   '/booking': typeof BookingRoute
   '/contact': typeof ContactRoute
   '/investor': typeof InvestorRoute
@@ -91,7 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin-Lgn73': typeof AdminLgn73Route
   '/booking': typeof BookingRoute
   '/contact': typeof ContactRoute
   '/investor': typeof InvestorRoute
@@ -104,7 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/admin'
+    | '/admin-Lgn73'
     | '/booking'
     | '/contact'
     | '/investor'
@@ -115,7 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/admin'
+    | '/admin-Lgn73'
     | '/booking'
     | '/contact'
     | '/investor'
@@ -126,7 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/admin'
+    | '/admin-Lgn73'
     | '/booking'
     | '/contact'
     | '/investor'
@@ -138,7 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRoute
+  AdminLgn73Route: typeof AdminLgn73Route
   BookingRoute: typeof BookingRoute
   ContactRoute: typeof ContactRoute
   InvestorRoute: typeof InvestorRoute
@@ -163,11 +163,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/admin-Lgn73': {
+      id: '/admin-Lgn73'
+      path: '/admin-Lgn73'
+      fullPath: '/admin-Lgn73'
+      preLoaderRoute: typeof AdminLgn73RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/booking': {
@@ -218,7 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRoute,
+  AdminLgn73Route: AdminLgn73Route,
   BookingRoute: BookingRoute,
   ContactRoute: ContactRoute,
   InvestorRoute: InvestorRoute,
