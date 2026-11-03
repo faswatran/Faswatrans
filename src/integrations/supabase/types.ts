@@ -74,6 +74,30 @@ export type Database = {
         }
         Relationships: []
       }
+      investors: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          name: string
+          photo_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          name: string
+          photo_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          name?: string
+          photo_url?: string | null
+        }
+        Relationships: []
+      }
       news_posts: {
         Row: {
           body: string | null
