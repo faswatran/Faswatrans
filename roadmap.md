@@ -2,3 +2,6 @@
 - [x] Delivery tracking page by booking code; staff mark picked up / on the way / delivered.
 - [x] Event and private charter "Mark finished" with thank-you message.
 - [ ] Send approval, delivery updates and thank-you messages automatically to customer WhatsApp and email (currently staff tap send on a ready message). Blocked on: WhatsApp Business connection (Meta login) and email domain setup.
+- [x] Staff login removed from footer; dashboard moved to secret address; no sign-up there.
+- [x] Dashboard split by order type with Pending / In progress / Finished lists and dates.
+- [ ] Save code to GitHub. Blocked on: user connecting GitHub in Project settings → Git.
