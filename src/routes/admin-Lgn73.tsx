@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
-import { Mail, MessageCircle } from "lucide-react";
+import { ChevronDown, Mail, MessageCircle } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,12 +86,6 @@ const SERVICE_TABS = [
   { key: "Delivery", label: "Delivery orders" },
 ] as const;
 
-const GROUPS: { key: OrderGroup; title: string; empty: string }[] = [
-  { key: "pending", title: "New & pending orders", empty: "No orders waiting for approval." },
-  { key: "active", title: "Approved — in progress", empty: "No orders in progress." },
-  { key: "finished", title: "Finished orders", empty: "No finished orders yet." },
-  { key: "declined", title: "Declined orders", empty: "No declined orders." },
-];
 
 function fmtDateTime(iso: string) {
   return new Date(iso).toLocaleString("en-NG", { dateStyle: "medium", timeStyle: "short" });
@@ -158,22 +153,29 @@ function Dashboard() {
   }
 
   if (!rows) return <p className="p-10 text-center text-muted-foreground">Loading…</p>;
-  const count = (service: string, group?: OrderGroup) =>
-    rows.filter((b) => b.service === service && (!group || orderGroup(b.status) === group)).length;
+  const count = (service: string | null, group?: OrderGroup) =>
+    rows.filter((b) => (!service || b.service === service) && (!group || orderGroup(b.status) === group)).length;
+  const actions = { onStatus: setStatus, onAdvance: advanceDelivery, onFinish: finishTrip };
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <h1 className="font-display text-3xl">Orders</h1>
       {rows.length === 0 && <p className="mt-6 text-muted-foreground">No bookings yet — or your account isn't a staff admin.</p>}
-      <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-5">
         {SERVICE_TABS.map((t) => (
           <div key={t.key} className="rounded-xl border bg-card p-4">
             <p className="text-sm text-muted-foreground">{t.label}</p>
-            <p className="font-display text-2xl">{count(t.key)}</p>
-            <p className="text-xs text-muted-foreground">{count(t.key, "pending")} pending · {count(t.key, "finished")} finished</p>
+            <p className="font-display text-2xl">{count(t.key, "pending")} <span className="text-sm font-sans text-muted-foreground">new</span></p>
+            <p className="text-xs text-muted-foreground">{count(t.key, "active")} pending</p>
           </div>
         ))}
+        <div className="rounded-xl border bg-card p-4">
+          <p className="text-sm text-muted-foreground">Finished orders</p>
+          <p className="font-display text-2xl">{count(null, "finished")}</p>
+          <p className="text-xs text-muted-foreground">all services</p>
+        </div>
       </div>
+
       <Tabs defaultValue="Staff booking" className="mt-8">
         <TabsList className="flex h-auto flex-wrap justify-start">
           {SERVICE_TABS.map((t) => (
@@ -182,92 +184,129 @@ function Dashboard() {
               {count(t.key, "pending") > 0 && <Badge variant="destructive" className="px-1.5 py-0 text-xs">{count(t.key, "pending")}</Badge>}
             </TabsTrigger>
           ))}
+          <TabsTrigger value="finished">Finished orders</TabsTrigger>
         </TabsList>
+
         {SERVICE_TABS.map((t) => {
           const list = rows.filter((b) => b.service === t.key);
+          const groups = SECTIONS.filter((g) => g.key !== "declined" || list.some((b) => orderGroup(b.status) === "declined"));
           return (
-            <TabsContent key={t.key} value={t.key} className="mt-6 space-y-10">
-              {GROUPS.filter((g) => g.key !== "declined" || list.some((b) => orderGroup(b.status) === "declined")).map((g) => {
-                const items = list.filter((b) => orderGroup(b.status) === g.key);
-                return (
-                  <section key={g.key}>
-                    <h2 className="flex items-center gap-2 font-display text-xl">{g.title} <span className="text-base text-muted-foreground">({items.length})</span></h2>
-                    {items.length === 0 ? (
-                      <p className="mt-3 text-sm text-muted-foreground">{g.empty}</p>
-                    ) : (
-                      <div className="mt-3 grid gap-3">
-                        {items.map((b) => (
-                          <OrderCard key={b.id} b={b} onStatus={setStatus} onAdvance={advanceDelivery} onFinish={finishTrip} />
-                        ))}
-                      </div>
-                    )}
-                  </section>
-                );
-              })}
+            <TabsContent key={t.key} value={t.key} className="mt-6">
+              <Tabs defaultValue="pending">
+                <TabsList>
+                  {groups.map((g) => (
+                    <TabsTrigger key={g.key} value={g.key}>{g.title} ({list.filter((b) => orderGroup(b.status) === g.key).length})</TabsTrigger>
+                  ))}
+                </TabsList>
+                {groups.map((g) => (
+                  <TabsContent key={g.key} value={g.key} className="mt-4">
+                    <OrderList items={list.filter((b) => orderGroup(b.status) === g.key)} empty={g.empty} {...actions} />
+                  </TabsContent>
+                ))}
+              </Tabs>
             </TabsContent>
           );
         })}
+
+        <TabsContent value="finished" className="mt-6">
+          <h2 className="font-display text-xl">Finished orders</h2>
+          <Tabs defaultValue="Staff booking" className="mt-3">
+            <TabsList className="flex h-auto flex-wrap justify-start">
+              {SERVICE_TABS.map((t) => (
+                <TabsTrigger key={t.key} value={t.key}>{t.label.replace(" orders", "")} ({count(t.key, "finished")})</TabsTrigger>
+              ))}
+            </TabsList>
+            {SERVICE_TABS.map((t) => (
+              <TabsContent key={t.key} value={t.key} className="mt-4">
+                <OrderList
+                  items={rows.filter((b) => b.service === t.key && orderGroup(b.status) === "finished")}
+                  empty={`No finished ${t.label.toLowerCase()} yet.`}
+                  {...actions}
+                />
+              </TabsContent>
+            ))}
+          </Tabs>
+        </TabsContent>
       </Tabs>
       <NewsManager />
     </main>
   );
 }
 
-function OrderCard({ b, onStatus, onAdvance, onFinish }: {
-  b: Booking;
+const SECTIONS: { key: OrderGroup; title: string; empty: string }[] = [
+  { key: "pending", title: "New orders", empty: "No new orders waiting for approval." },
+  { key: "active", title: "Pending orders", empty: "No approved orders in progress." },
+  { key: "declined", title: "Declined", empty: "No declined orders." },
+];
+
+type Actions = {
   onStatus: (b: Booking, s: "approved" | "declined") => void;
   onAdvance: (b: Booking) => void;
   onFinish: (b: Booking) => void;
-}) {
+};
+
+function OrderList({ items, empty, ...actions }: { items: Booking[]; empty: string } & Actions) {
+  if (items.length === 0) return <p className="text-sm text-muted-foreground">{empty}</p>;
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded-xl border bg-card p-5">
-      <div className="min-w-48 flex-1">
-        <p className="font-display">{b.origin} → {b.destination} <span className="text-sm text-muted-foreground">#{b.reference}</span></p>
-        <p className="mt-1 text-sm"><span className="text-muted-foreground">Ordered:</span> {fmtDateTime(b.created_at)} · <span className="text-muted-foreground">Pickup:</span> {fmtPickup(b)}</p>
-        {b.completed_at && <p className="text-sm"><span className="text-muted-foreground">Finished:</span> {fmtDateTime(b.completed_at)}</p>}
-        {b.service === "Event hiring" && <p className="text-sm text-muted-foreground">{b.passengers} people</p>}
-        <p className="text-sm">{b.full_name.endsWith(" request") ? "" : `${b.full_name} · `}{b.phone} · {b.email}</p>
-        {b.notes && <p className="mt-1 whitespace-pre-line text-sm italic text-muted-foreground">{b.notes}</p>}
-        {b.item_photo && <ItemPhoto path={b.item_photo} />}
-      </div>
-      <Badge variant={b.status === "approved" ? "default" : b.status === "declined" ? "destructive" : b.status === "completed" ? "outline" : "secondary"}>{b.status}</Badge>
-      {b.status === "pending" && (
-        <div className="flex gap-2">
-          <Button size="sm" onClick={() => onStatus(b, "approved")}>Approve</Button>
-          <Button size="sm" variant="outline" onClick={() => onStatus(b, "declined")}>Decline</Button>
-        </div>
-      )}
-      {b.service === "Delivery" && b.status !== "pending" && b.status !== "declined" && (
-        <p className="w-full text-sm text-muted-foreground">Tracking: {parseTracking(b.tracking).map((t) => t.stage.replace("_", " ")).join(" → ") || "approved, waiting for pickup"}</p>
-      )}
-      {b.status === "approved" && (
-        <div className="flex flex-wrap gap-2">
-          {b.service === "Delivery" && (() => {
-            const next = nextDeliveryStage(parseTracking(b.tracking));
-            return next && <Button size="sm" onClick={() => onAdvance(b)}>Mark {next.label.toLowerCase()}</Button>;
-          })()}
-          {(b.service === "Event hiring" || b.service === "Private charter") && (
-            <Button size="sm" onClick={() => onFinish(b)}>Mark finished</Button>
-          )}
-          <Button asChild size="sm" variant="whatsapp">
-            <a href={approvalMsg(b)} target="_blank" rel="noreferrer"><MessageCircle /> Send confirmation</a>
-          </Button>
-          <Button asChild size="sm" variant="outline">
-            <a href={emailLink(b, "approved")}><Mail /> Email</a>
-          </Button>
-        </div>
-      )}
-      {b.status === "completed" && (
-        <div className="flex flex-wrap gap-2">
-          <Button asChild size="sm" variant="whatsapp">
-            <a href={waLink(finalText(b), customerPhone(b))} target="_blank" rel="noreferrer"><MessageCircle /> Resend message</a>
-          </Button>
-          <Button asChild size="sm" variant="outline">
-            <a href={emailLink(b, "completed")}><Mail /> Email</a>
-          </Button>
-        </div>
-      )}
+    <div className="divide-y rounded-xl border bg-card">
+      {items.map((b) => <OrderRow key={b.id} b={b} {...actions} />)}
     </div>
+  );
+}
+
+function OrderRow({ b, onStatus, onAdvance, onFinish }: { b: Booking } & Actions) {
+  const next = b.service === "Delivery" && b.status === "approved" ? nextDeliveryStage(parseTracking(b.tracking)) : null;
+  return (
+    <Collapsible className="p-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="min-w-48 flex-1">
+          <p className="font-display">#{b.reference} <span className="font-sans text-sm text-muted-foreground">{b.origin}{b.destination !== "To be confirmed" ? ` → ${b.destination}` : ""}</span></p>
+          <p className="text-xs text-muted-foreground">
+            Ordered {fmtDateTime(b.created_at)} · Pickup {fmtPickup(b)}
+            {b.completed_at && ` · Finished ${fmtDateTime(b.completed_at)}`}
+          </p>
+        </div>
+        <Badge variant={b.status === "approved" ? "default" : b.status === "declined" ? "destructive" : b.status === "completed" ? "outline" : "secondary"}>
+          {b.status === "approved" ? "in progress" : b.status === "pending" ? "new" : b.status}
+        </Badge>
+        {b.status === "pending" && (
+          <>
+            <Button size="sm" onClick={() => onStatus(b, "approved")}>Approve</Button>
+            <Button size="sm" variant="outline" onClick={() => onStatus(b, "declined")}>Decline</Button>
+          </>
+        )}
+        {next && <Button size="sm" onClick={() => onAdvance(b)}>Mark {next.label.toLowerCase()}</Button>}
+        {b.status === "approved" && (b.service === "Event hiring" || b.service === "Private charter") && (
+          <Button size="sm" onClick={() => onFinish(b)}>Mark finished</Button>
+        )}
+        <CollapsibleTrigger asChild>
+          <Button size="sm" variant="ghost" className="group">
+            Details <ChevronDown className="transition-transform group-data-[state=open]:rotate-180" />
+          </Button>
+        </CollapsibleTrigger>
+      </div>
+      <CollapsibleContent className="mt-3 space-y-1 rounded-lg bg-muted p-3 text-sm">
+        <p>{b.full_name.endsWith(" request") ? "" : `${b.full_name} · `}{b.phone} · {b.email}</p>
+        {b.service === "Event hiring" && <p className="text-muted-foreground">{b.passengers} people</p>}
+        {b.notes && <p className="whitespace-pre-line italic text-muted-foreground">{b.notes}</p>}
+        {b.service === "Delivery" && b.status !== "pending" && b.status !== "declined" && (
+          <p className="text-muted-foreground">Tracking: {parseTracking(b.tracking).map((t) => t.stage.replace("_", " ")).join(" → ") || "approved, waiting for pickup"}</p>
+        )}
+        {b.item_photo && <ItemPhoto path={b.item_photo} />}
+        {(b.status === "approved" || b.status === "completed") && (
+          <div className="flex flex-wrap gap-2 pt-2">
+            <Button asChild size="sm" variant="whatsapp">
+              <a href={b.status === "approved" ? approvalMsg(b) : waLink(finalText(b), customerPhone(b))} target="_blank" rel="noreferrer">
+                <MessageCircle /> {b.status === "approved" ? "Send confirmation" : "Resend message"}
+              </a>
+            </Button>
+            <Button asChild size="sm" variant="outline">
+              <a href={emailLink(b, b.status === "approved" ? "approved" : "completed")}><Mail /> Email</a>
+            </Button>
+          </div>
+        )}
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
 
