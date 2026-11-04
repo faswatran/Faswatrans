@@ -293,7 +293,7 @@ function OrderList({ items, empty, showService, ...actions }: { items: Booking[]
   if (items.length === 0) return <p className="text-sm text-muted-foreground">{empty}</p>;
   return (
     <div className="divide-y rounded-xl border bg-card">
-      {items.map((b) => <OrderRow key={b.id} b={b} showService={showService} {...actions} />)}
+      {items.map((b) => <OrderRow key={b.id} b={b} showService={!!showService} {...actions} />)}
     </div>
   );
 }
