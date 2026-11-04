@@ -128,6 +128,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_content: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -158,6 +176,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_staff_email: { Args: { _email: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin"
