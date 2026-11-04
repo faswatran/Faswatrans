@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Clock, ShieldCheck, Target, Telescope, Users, Wallet } from "lucide-react";
-import logo from "@/assets/faswa-logo-2.jpg.asset.json";
+import { LOGO_IMG } from "@/lib/fleet";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 import { SIENNA_IMG } from "@/lib/fleet";
 
@@ -23,7 +23,7 @@ function About() {
     <SiteLayout>
       <PageHero image={SIENNA_IMG} eyebrow="About us" title="Building better ways to move" text="FASWA Transport & Logistics Ltd was created around a simple idea: people and businesses deserve better ways to move." />
       <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:grid-cols-[1fr_1.5fr]">
-        <img src={logo.url} alt="FASWA logo" className="mx-auto w-56" />
+        <img src={LOGO_IMG} alt="FASWA logo" className="mx-auto w-56" />
         <div className="space-y-4 text-lg text-muted-foreground">
           <h2 className="font-display text-3xl text-primary">What FASWA means</h2>
           <p><strong className="text-primary">Fast & Affordable, Safe Ways Always.</strong></p>

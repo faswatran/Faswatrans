@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import logo from "@/assets/faswa-logo-2.jpg.asset.json";
+import { LOGO_IMG } from "@/lib/fleet";
 import { ChatWidget } from "@/components/ChatWidget";
 import { COMPANY, SOCIALS, TAGLINE } from "@/lib/company";
 
@@ -26,7 +26,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 border-b bg-card/95 shadow-sm backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3">
           <Link to="/" className="flex items-center gap-3">
-            <img src={logo.url} alt="FASWA logo" className="h-16 w-16 rounded-md object-contain" />
+            <img src={LOGO_IMG} alt="FASWA logo" className="h-16 w-16 rounded-md object-contain" />
             <span className="leading-tight">
               <span className="block font-display text-6xl leading-none tracking-wide text-primary md:text-7xl">FASWA</span>
               <span className="block text-sm font-bold uppercase tracking-wider text-muted-foreground">Transport and Logistics Ltd</span>
@@ -52,7 +52,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-3">
           <div>
             <div className="flex items-center gap-3">
-              <img src={logo.url} alt="" className="h-12 w-12 rounded-md bg-card object-contain" />
+              <img src={LOGO_IMG} alt="" className="h-12 w-12 rounded-md bg-card object-contain" />
               <span className="font-display text-3xl font-bold md:text-4xl">FASWA</span>
             </div>
             <p className="mt-4 opacity-80">{TAGLINE}</p>
