@@ -1,4 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 import { Handshake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
@@ -19,10 +22,14 @@ export const Route = createFileRoute("/investor")({
   component: Investor,
 });
 
-// Add each investor's name (and optional note) here as they invest.
-const INVESTORS: { name: string; note?: string }[] = [];
+type InvestorRow = Tables<"investors">;
 
 function Investor() {
+  const [investors, setInvestors] = useState<InvestorRow[]>([]);
+  useEffect(() => {
+    supabase.from("investors").select("*").order("created_at", { ascending: true })
+      .then(({ data }) => setInvestors(data ?? []));
+  }, []);
   return (
     <SiteLayout>
       <PageHero
@@ -32,7 +39,7 @@ function Investor() {
         text="The people and partners who believe in FASWA and are helping us build a better way to move."
       />
       <section className="mx-auto max-w-6xl px-6 py-16">
-        {INVESTORS.length === 0 ? (
+        {investors.length === 0 ? (
           <div className="mx-auto max-w-xl rounded-2xl border bg-card p-10 text-center">
             <Handshake className="mx-auto h-10 w-10 text-accent" />
             <h2 className="mt-4 font-display text-2xl text-primary">Investor names will appear here</h2>
@@ -42,11 +49,13 @@ function Investor() {
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {INVESTORS.map((inv) => (
-              <div key={inv.name} className="rounded-2xl border bg-card p-6">
-                <Handshake className="h-8 w-8 text-accent" />
+            {investors.map((inv) => (
+              <div key={inv.id} className="rounded-2xl border bg-card p-6 text-center">
+                {inv.photo_url
+                  ? <img src={inv.photo_url} alt={inv.name} loading="lazy" className="mx-auto h-28 w-28 rounded-full object-cover" />
+                  : <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-secondary"><Handshake className="h-10 w-10 text-accent" /></div>}
                 <h3 className="mt-4 font-display text-lg text-primary">{inv.name}</h3>
-                {inv.note && <p className="mt-2 text-muted-foreground">{inv.note}</p>}
+                {inv.message && <p className="mt-2 italic text-muted-foreground">“{inv.message}”</p>}
               </div>
             ))}
           </div>

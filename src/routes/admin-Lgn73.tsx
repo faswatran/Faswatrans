@@ -289,16 +289,16 @@ type Actions = {
   onFinish: (b: Booking) => void;
 };
 
-function OrderList({ items, empty, ...actions }: { items: Booking[]; empty: string } & Actions) {
+function OrderList({ items, empty, showService, ...actions }: { items: Booking[]; empty: string; showService?: boolean } & Actions) {
   if (items.length === 0) return <p className="text-sm text-muted-foreground">{empty}</p>;
   return (
     <div className="divide-y rounded-xl border bg-card">
-      {items.map((b) => <OrderRow key={b.id} b={b} {...actions} />)}
+      {items.map((b) => <OrderRow key={b.id} b={b} showService={showService} {...actions} />)}
     </div>
   );
 }
 
-function OrderRow({ b, onStatus, onAdvance, onFinish }: { b: Booking } & Actions) {
+function OrderRow({ b, showService, onStatus, onAdvance, onFinish }: { b: Booking; showService?: boolean } & Actions) {
   const next = b.service === "Delivery" && b.status === "approved" ? nextDeliveryStage(parseTracking(b.tracking)) : null;
   return (
     <Collapsible className="p-4">
@@ -306,6 +306,7 @@ function OrderRow({ b, onStatus, onAdvance, onFinish }: { b: Booking } & Actions
         <div className="min-w-48 flex-1">
           <p className="font-display">#{b.reference} <span className="font-sans text-sm text-muted-foreground">{b.origin}{b.destination !== "To be confirmed" ? ` → ${b.destination}` : ""}</span></p>
           <p className="text-xs text-muted-foreground">
+            {showService && <span className="font-semibold text-foreground">{b.service} · </span>}
             Ordered {fmtDateTime(b.created_at)} · Pickup {fmtPickup(b)}
             {b.completed_at && ` · Finished ${fmtDateTime(b.completed_at)}`}
           </p>
