@@ -4,4 +4,6 @@
 - [ ] Send approval, delivery updates and thank-you messages automatically to customer WhatsApp and email (currently staff tap send on a ready message). Blocked on: WhatsApp Business connection (Meta login) and email domain setup.
 - [x] Staff login removed from footer; dashboard moved to secret address; no sign-up there.
 - [x] Dashboard split by order type with Pending / In progress / Finished lists and dates.
-- [ ] Save code to GitHub. Blocked on: user connecting GitHub in Project settings → Git.
+- [x] Code saved to GitHub automatically through the connected Git sync.
+- [x] Dashboard: Orders / News / Investors sections, order search, collapsed order details.
+- [x] Investors managed from dashboard (photo, name, good word) and shown on Investor page.
