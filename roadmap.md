@@ -7,3 +7,9 @@
 - [x] Code saved to GitHub automatically through the connected Git sync.
 - [x] Dashboard: Orders / News / Investors sections, order search, collapsed order details.
 - [x] Investors managed from dashboard (photo, name, good word) and shown on Investor page.
+- [ ] Stronger CSS to hide the Netlify badge.
+- [ ] Dashboard "Pages" section to edit page text and background photos.
+- [ ] Order search finds booking codes (with or without #).
+- [ ] Full name on every booking form; used in approval and other customer messages.
+- [ ] Logo and photos saved in /public (logo.png, hero-bus.jpg) and used everywhere.
+- [ ] Only admin@faswatrans.com.ng and faswatrans@gmail.com can open the dashboard.
