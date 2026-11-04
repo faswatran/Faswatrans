@@ -298,7 +298,7 @@ function OrderList({ items, empty, showService, ...actions }: { items: Booking[]
   );
 }
 
-function OrderRow({ b, showService, onStatus, onAdvance, onFinish }: { b: Booking; showService?: boolean } & Actions) {
+function OrderRow({ b, showService, onStatus, onAdvance, onFinish }: { b: Booking; showService?: boolean | undefined } & Actions) {
   const next = b.service === "Delivery" && b.status === "approved" ? nextDeliveryStage(parseTracking(b.tracking)) : null;
   return (
     <Collapsible className="p-4">
