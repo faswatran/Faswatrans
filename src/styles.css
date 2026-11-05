@@ -159,4 +159,24 @@
 @utility shadow-lift { box-shadow: var(--shadow-lift); }
 
 /* Hide third-party hosting badges (e.g. "Powered by Netlify") if a host injects one. */
-#netlify-badge, .netlify-badge, a[href*="netlify.com"][class*="badge"], [data-netlify-badge] { display: none !important; }
+#netlify-badge,
+.netlify-badge,
+[data-netlify-badge],
+[id*="netlify" i],
+[class*="netlify" i],
+[data-netlify],
+netlify-badge,
+netlify-drawer,
+iframe[src*="netlify" i],
+iframe[title*="netlify" i],
+a[href*="netlify.com"],
+a[href*="netlify.app"][target="_blank"],
+[data-hide-host-badge] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}

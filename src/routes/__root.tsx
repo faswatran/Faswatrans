@@ -118,6 +118,22 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  // Backup for hosts that inject a badge with random class names: tag any small
+  // fixed-position element reading "Powered by Netlify" so the CSS rule hides it.
+  useEffect(() => {
+    const hide = () => {
+      document.querySelectorAll<HTMLElement>("body > *:not(script):not(style)").forEach((el) => {
+        if (el.dataset.hideHostBadge) return;
+        const text = (el.textContent || el.shadowRoot?.textContent || "").toLowerCase();
+        if (text.length < 80 && text.includes("netlify")) el.dataset.hideHostBadge = "1";
+      });
+    };
+    hide();
+    const observer = new MutationObserver(hide);
+    observer.observe(document.body, { childList: true });
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
