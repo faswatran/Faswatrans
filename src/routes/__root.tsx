@@ -123,9 +123,9 @@ function RootComponent() {
   useEffect(() => {
     const hide = () => {
       document.querySelectorAll<HTMLElement>("body > *:not(script):not(style)").forEach((el) => {
-        if (el.dataset.hideHostBadge) return;
+        if (el.dataset["hideHostBadge"]) return;
         const text = (el.textContent || el.shadowRoot?.textContent || "").toLowerCase();
-        if (text.length < 80 && text.includes("netlify")) el.dataset.hideHostBadge = "1";
+        if (text.length < 80 && text.includes("netlify")) el.dataset["hideHostBadge"] = "1";
       });
     };
     hide();
