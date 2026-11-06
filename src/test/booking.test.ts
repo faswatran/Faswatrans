@@ -1,7 +1,29 @@
 import { describe, expect, it } from "vitest";
-import { bookingRequestSchema, toBookingRecord } from "@/lib/booking";
+import { BOOKING_SERVICES, appreciationText, approvalText, bookingRequestSchema, deliveryUpdateText, toBookingRecord } from "@/lib/booking";
 
-const contact = { email: "booking@example.com", phone: "+2348012345678", origin: "Ikeja, Lagos", pickup_at: "2026-11-12T08:30" };
+const contact = { full_name: "Ada Okafor", email: "booking@example.com", phone: "+2348012345678", origin: "Ikeja, Lagos", pickup_at: "2026-11-12T08:30" };
+
+describe("Customer names", () => {
+  const extra = { destination: "Lekki", passengers: 12, vehicle: "Toyota Sienna", items: "Documents", photo: { type: "image/jpeg", data: "aGVsbG8gd29ybGQ=" } };
+  it.each(BOOKING_SERVICES)("requires and saves a trimmed full name for %s", (service) => {
+    const input = { ...contact, ...extra, service };
+    expect(bookingRequestSchema.safeParse({ ...input, full_name: undefined }).success).toBe(false);
+    expect(bookingRequestSchema.safeParse({ ...input, full_name: "  " }).success).toBe(false);
+    expect(toBookingRecord(bookingRequestSchema.parse({ ...input, full_name: " Ada Okafor " })).full_name).toBe("Ada Okafor");
+  });
+  it.each(BOOKING_SERVICES)("personalizes approval for %s", (service) => {
+    expect(approvalText({ ...contact, service, reference: "ABC123", destination: "Lekki", travel_date: "2026-11-12" })).toContain("Hello Ada Okafor,");
+  });
+  it.each(["Event hiring", "Private charter"])("personalizes the thank-you for %s", (service) => {
+    expect(appreciationText(service, "ABC123", "Ada Okafor")).toContain("Hello Ada Okafor,");
+  });
+  it("personalizes the delivery thank-you", () => {
+    expect(deliveryUpdateText("delivered", "ABC123", "/track", "Ada Okafor")).toContain("Hello Ada Okafor,");
+  });
+  it("does not treat an old placeholder as a customer name", () => {
+    expect(appreciationText("Event hiring", "ABC123", "Event hiring request")).toMatch(/^Hello, /);
+  });
+});
 
 describe("Short booking requests", () => {
   it("accepts staff email, WhatsApp, pickup, time and destination without extra fields", () => {
