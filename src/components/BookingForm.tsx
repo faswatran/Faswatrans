@@ -35,6 +35,7 @@ export function BookingForm({ service }: { service: BookingService }) {
       const res = await submit({
         data: {
           service,
+          full_name: String(f.get("full_name")),
           email: String(f.get("email")),
           phone: String(f.get("phone")),
           origin: String(f.get("origin")),
@@ -75,6 +76,7 @@ export function BookingForm({ service }: { service: BookingService }) {
   const destLabel = isDelivery ? "Delivery address" : isCharter ? "Destination" : "Staff destination";
   return (
     <form key={service} onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
+      <Field name="full_name" label="Full name" autoComplete="name" placeholder="Enter your full name" minLength={2} maxLength={120} className="sm:col-span-2" />
       <Field name="email" label="Email (Gmail or other)" type="email" autoComplete="email" placeholder="you@gmail.com" maxLength={200} />
       <Field name="phone" label="WhatsApp number" type="tel" autoComplete="tel" placeholder="e.g. +234 801 234 5678" minLength={7} maxLength={20} />
       <Field name="origin" label="Pickup location" placeholder="Street, area or landmark" minLength={2} maxLength={60} />

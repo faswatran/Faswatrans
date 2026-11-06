@@ -10,6 +10,6 @@
 - [ ] Stronger CSS to hide the Netlify badge.
 - [ ] Dashboard "Pages" section to edit page text and background photos.
 - [ ] Order search finds booking codes (with or without #).
-- [ ] Full name on every booking form; used in approval and other customer messages.
+- [x] Full name on every booking form; used in approval and other customer messages.
 - [ ] Logo and photos saved in /public (logo.png, hero-bus.jpg) and used everywhere.
 - [ ] Only admin@faswatrans.com.ng and faswatrans@gmail.com can open the dashboard.

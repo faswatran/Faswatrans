@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { waLink } from "@/lib/company";
-import { appreciationText, deliveryUpdateText, nextDeliveryStage, orderGroup, parseTracking, pickupTimeFromNotes, type OrderGroup } from "@/lib/booking";
+import { appreciationText, approvalText, deliveryUpdateText, nextDeliveryStage, orderGroup, parseTracking, pickupTimeFromNotes, type OrderGroup } from "@/lib/booking";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NewsManager } from "@/components/NewsManager";
 import type { Tables } from "@/integrations/supabase/types";
@@ -136,7 +136,7 @@ function Dashboard() {
       return;
     }
     toast.success(`Delivery ${b.reference}: ${next.label}`);
-    window.open(waLink(deliveryUpdateText(next.key, b.reference, trackUrl(b)), customerPhone(b)), "_blank");
+    window.open(waLink(deliveryUpdateText(next.key, b.reference, trackUrl(b), b.full_name), customerPhone(b)), "_blank");
     load();
   }
 
@@ -150,7 +150,7 @@ function Dashboard() {
       return;
     }
     toast.success(`Booking ${b.reference} finished`);
-    window.open(waLink(appreciationText(b.service, b.reference), customerPhone(b)), "_blank");
+    window.open(waLink(appreciationText(b.service, b.reference, b.full_name), customerPhone(b)), "_blank");
     load();
   }
 
@@ -364,25 +364,19 @@ function trackUrl(b: Booking) {
 }
 
 function finalText(b: Booking) {
-  return b.service === "Delivery" ? deliveryUpdateText("delivered", b.reference, trackUrl(b)) : appreciationText(b.service, b.reference);
+  return b.service === "Delivery" ? deliveryUpdateText("delivered", b.reference, trackUrl(b), b.full_name) : appreciationText(b.service, b.reference, b.full_name);
 }
 
 function emailLink(b: Booking, kind: "approved" | "completed") {
   const subject = kind === "approved" ? `Your FASWA booking #${b.reference} is approved` : `Thank you — FASWA booking #${b.reference}`;
   const body = kind === "approved"
-    ? `Hello, your FASWA booking #${b.reference} has been APPROVED.${b.service === "Delivery" ? ` Track your delivery here: ${trackUrl(b)}` : ""}`
+    ? approvalText(b, b.service === "Delivery" ? trackUrl(b) : undefined)
     : finalText(b);
   return `mailto:${b.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 function approvalMsg(b: Booking) {
-  const phone = customerPhone(b);
-  const greeting = b.full_name.endsWith(" request") ? "Hello" : `Hello ${b.full_name}`;
-  const journey = b.destination === "To be confirmed" ? `pickup at ${b.origin}` : `${b.origin} → ${b.destination}`;
-  return waLink(
-    `${greeting}, your FASWA booking #${b.reference} (${journey} on ${b.travel_date}) has been APPROVED.${b.service === "Delivery" ? ` Track your delivery with code ${b.reference}: ${trackUrl(b)}` : ""} Thank you for choosing FASWA Transportation!`,
-    phone,
-  );
+  return waLink(approvalText(b, b.service === "Delivery" ? trackUrl(b) : undefined), customerPhone(b));
 }
 
 function ItemPhoto({ path }: { path: string }) {

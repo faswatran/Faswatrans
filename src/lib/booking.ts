@@ -6,6 +6,7 @@ export type BookingService = (typeof BOOKING_SERVICES)[number];
 
 export const bookingRequestSchema = z.object({
   service: z.enum(BOOKING_SERVICES),
+  full_name: z.string().trim().min(2, "Enter your full name.").max(120),
   email: z.string().trim().email().max(200),
   phone: z.string().trim().min(7).max(20),
   origin: z.string().trim().min(2).max(60),
@@ -51,7 +52,7 @@ export function toBookingRecord(data: z.infer<typeof bookingRequestSchema>) {
     : journey;
   return {
     service: s,
-    full_name: `${s} request`,
+    full_name: data.full_name,
     email: data.email,
     phone: data.phone,
     origin: data.origin,
@@ -83,17 +84,27 @@ export function nextDeliveryStage(tracking: TrackingEntry[]) {
 
 export const normalizeReference = (code: string) => code.trim().replace(/^#/, "").toUpperCase();
 
-export function deliveryUpdateText(stage: DeliveryStage, reference: string, trackUrl: string) {
+export function customerGreeting(fullName?: string) {
+  const name = fullName?.trim();
+  return name && !BOOKING_SERVICES.some((service) => name === `${service} request`) ? `Hello ${name}` : "Hello";
+}
+
+export function approvalText(booking: { full_name: string; reference: string; origin: string; destination: string; travel_date: string; service: string }, trackUrl?: string) {
+  const journey = booking.destination === "To be confirmed" ? `pickup at ${booking.origin}` : `${booking.origin} → ${booking.destination}`;
+  return `${customerGreeting(booking.full_name)}, your FASWA booking #${booking.reference} (${journey} on ${booking.travel_date}) has been APPROVED.${booking.service === "Delivery" && trackUrl ? ` Track your delivery with code ${booking.reference}: ${trackUrl}` : ""} Thank you for choosing FASWA Transportation!`;
+}
+
+export function deliveryUpdateText(stage: DeliveryStage, reference: string, trackUrl: string, fullName?: string) {
   const line =
     stage === "picked_up" ? "has been picked up"
     : stage === "in_transit" ? "is on the way"
     : "has been delivered. Thank you for trusting FASWA";
-  return `Hello, your FASWA delivery #${reference} ${line}. Track it anytime with your code ${reference}: ${trackUrl}`;
+  return `${customerGreeting(fullName)}, your FASWA delivery #${reference} ${line}. Track it anytime with your code ${reference}: ${trackUrl}`;
 }
 
-export function appreciationText(service: string, reference: string) {
+export function appreciationText(service: string, reference: string, fullName?: string) {
   const kind = service === "Event hiring" ? "event trip" : "private charter";
-  return `Hello, thank you for riding with FASWA! Your ${kind} #${reference} is complete. We truly appreciate you choosing FASWA Transport and Logistics Ltd and look forward to moving you again. Fast & Affordable, Safe Ways Always.`;
+  return `${customerGreeting(fullName)}, thank you for riding with FASWA! Your ${kind} #${reference} is complete. We truly appreciate you choosing FASWA Transport and Logistics Ltd and look forward to moving you again. Fast & Affordable, Safe Ways Always.`;
 }
 
 // Staff dashboard grouping: which list a booking belongs in.
