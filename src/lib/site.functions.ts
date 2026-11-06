@@ -67,8 +67,8 @@ Your main goal is to lead customers to chat with our team on WhatsApp for quotes
     }
   });
 
-// Public delivery tracking by booking code. Returns only progress, never contact details or addresses.
-export const trackDelivery = createServerFn({ method: "POST" })
+// Public tracking by booking code for every service. Returns only progress, never contact details or addresses.
+export const trackBooking = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ code: z.string().trim().min(4).max(12) }).parse(d))
   .handler(async ({ data }) => {
     const { normalizeReference, parseTracking } = await import("./booking");
@@ -77,9 +77,8 @@ export const trackDelivery = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("bookings")
-      .select("reference, service, status, travel_date, created_at, approved_at, tracking")
+      .select("reference, service, status, travel_date, created_at, approved_at, completed_at, tracking")
       .eq("reference", code)
-      .eq("service", "Delivery")
       .maybeSingle();
     if (error) {
       console.error(error);
@@ -89,7 +88,9 @@ export const trackDelivery = createServerFn({ method: "POST" })
     return {
       found: true as const,
       reference: row.reference,
+      service: row.service,
       status: row.status,
+      completed_at: row.completed_at,
       pickup_date: row.travel_date,
       booked_at: row.created_at,
       approved_at: row.approved_at,

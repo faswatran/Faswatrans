@@ -49,8 +49,8 @@ export function BookingForm({ service }: { service: BookingService }) {
         },
       });
       setDone(res.reference);
-    } catch {
-      toast.error("Please check your details and try again.");
+    } catch (err) {
+      toast.error(bookingErrorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -138,4 +138,20 @@ async function shrinkImage(file: File) {
   canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   const preview = canvas.toDataURL("image/jpeg", 0.82);
   return { type: "image/jpeg" as const, data: preview.split(",")[1] ?? "", preview };
+}
+
+// Turn a failed request into a message that tells the customer what to fix.
+function bookingErrorMessage(err: unknown) {
+  const raw = err instanceof Error ? err.message : "";
+  try {
+    const issues = JSON.parse(raw) as { path?: string[]; message?: string }[];
+    if (Array.isArray(issues) && issues.length) {
+      const field: Record<string, string> = { full_name: "Full name", email: "Email", phone: "WhatsApp number", origin: "Pickup location", pickup_at: "Pickup date & time", destination: "Destination", passengers: "Number of people", items: "Item description", photo: "Photo", vehicle: "Vehicle" };
+      const i = issues[0];
+      const name = field[i.path?.[0] ?? ""];
+      return name ? `${name}: ${i.message ?? "please check this field."}` : i.message ?? "Please check your details and try again.";
+    }
+  } catch { /* not a validation error */ }
+  if (/fetch|network|Failed to|404|405|Unexpected token/i.test(raw)) return "We couldn't reach our booking system. Please check your connection or book on WhatsApp.";
+  return raw && raw.length < 120 ? raw : "Something went wrong. Please try again or book on WhatsApp.";
 }
