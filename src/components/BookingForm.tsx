@@ -145,9 +145,9 @@ function bookingErrorMessage(err: unknown) {
   const raw = err instanceof Error ? err.message : "";
   try {
     const issues = JSON.parse(raw) as { path?: string[]; message?: string }[];
-    if (Array.isArray(issues) && issues.length) {
+    if (Array.isArray(issues) && issues[0]) {
       const field: Record<string, string> = { full_name: "Full name", email: "Email", phone: "WhatsApp number", origin: "Pickup location", pickup_at: "Pickup date & time", destination: "Destination", passengers: "Number of people", items: "Item description", photo: "Photo", vehicle: "Vehicle" };
-      const i = issues[0];
+      const i = issues[0] as { path?: string[]; message?: string };
       const name = field[i.path?.[0] ?? ""];
       return name ? `${name}: ${i.message ?? "please check this field."}` : i.message ?? "Please check your details and try again.";
     }
