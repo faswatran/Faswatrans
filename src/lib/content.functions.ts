@@ -4,8 +4,8 @@ import type { Database } from "@/integrations/supabase/types";
 
 // Public read of the staff-edited page text. Falls back to defaults on any error.
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async () => {
-  const url = process.env["SUPABASE_URL"];
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return {} as Record<string, string>;
   try {
     const sb = createClient<Database>(url, key, {
