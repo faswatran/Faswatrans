@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -9,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { HIACE_IMG } from "@/lib/fleet";
-import { trackBooking } from "@/lib/site.functions";
+import { trackBooking } from "@/lib/booking-client";
 import { DELIVERY_STAGES } from "@/lib/booking";
 import { waLink } from "@/lib/company";
 
 export const Route = createFileRoute("/track")({
-  validateSearch: z.object({ code: z.string().max(12).optional() }),
+  validateSearch: z.object({ code: z.string().max(13).optional() }),
   head: () => ({
     meta: [
       { title: "Track Your Booking — FASWA Transport and Logistics Ltd" },
@@ -43,7 +42,7 @@ function fmt(at: string) {
 
 function TrackPage() {
   const { code: initial } = Route.useSearch();
-  const lookup = useServerFn(trackBooking);
+  const lookup = trackBooking;
   const [code, setCode] = useState(initial ?? "");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
@@ -68,7 +67,7 @@ function TrackPage() {
         <form onSubmit={(e) => { e.preventDefault(); run(code); }} className="flex flex-col gap-3 sm:flex-row sm:items-end">
           <div className="flex-1">
             <Label htmlFor="code">Booking code</Label>
-            <Input id="code" value={code} onChange={(e) => setCode(e.target.value)} placeholder="e.g. A1B2C3" maxLength={12} required className="mt-2 h-12 uppercase tracking-widest" />
+            <Input id="code" value={code} onChange={(e) => setCode(e.target.value)} placeholder="e.g. A1B2C3" maxLength={13} required className="mt-2 h-12 uppercase tracking-widest" />
           </div>
           <Button type="submit" size="lg" className="h-12" disabled={busy}><Search />{busy ? "Checking…" : "Track"}</Button>
         </form>

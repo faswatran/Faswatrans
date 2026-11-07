@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Camera, CheckCircle2 } from "lucide-react";
@@ -7,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { createBooking } from "@/lib/site.functions";
+import { createBooking } from "@/lib/booking-client";
 import { waLink } from "@/lib/company";
 import { CHARTER_VEHICLES, type BookingService } from "@/lib/booking";
 
 export function BookingForm({ service }: { service: BookingService }) {
-  const submit = useServerFn(createBooking);
+  const submit = createBooking;
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
   const [returnTrip, setReturnTrip] = useState(false);
@@ -135,7 +134,10 @@ async function shrinkImage(file: File) {
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(bitmap.width * scale);
   canvas.height = Math.round(bitmap.height * scale);
-  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Could not read photo");
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
   const preview = canvas.toDataURL("image/jpeg", 0.82);
   return { type: "image/jpeg" as const, data: preview.split(",")[1] ?? "", preview };
 }
