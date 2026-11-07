@@ -1,35 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { COMPANY, ROUTES } from "./company";
-import { bookingRequestSchema, toBookingRecord } from "./booking";
-
-export const createBooking = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => bookingRequestSchema.parse(d))
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    let item_photo: string | null = null;
-    if (data.service === "Delivery" && data.photo) {
-      const bytes = Uint8Array.from(atob(data.photo.data), (c) => c.charCodeAt(0));
-      const ext = data.photo.type.split("/")[1];
-      const path = `${crypto.randomUUID()}.${ext}`;
-      const up = await supabaseAdmin.storage.from("delivery-photos").upload(path, bytes, { contentType: data.photo.type });
-      if (up.error) {
-        console.error(up.error);
-        throw new Error("Could not save the photo");
-      }
-      item_photo = path;
-    }
-    const { data: row, error } = await supabaseAdmin
-      .from("bookings")
-      .insert({ ...toBookingRecord(data), item_photo })
-      .select("reference")
-      .single();
-    if (error) {
-      console.error(error);
-      throw new Error("Could not save booking");
-    }
-    return { reference: row.reference };
-  });
 
 const chatSchema = z.object({
   messages: z
@@ -67,33 +38,3 @@ Your main goal is to lead customers to chat with our team on WhatsApp for quotes
     }
   });
 
-// Public tracking by booking code for every service. Returns only progress, never contact details or addresses.
-export const trackBooking = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ code: z.string().trim().min(4).max(12) }).parse(d))
-  .handler(async ({ data }) => {
-    const { normalizeReference, parseTracking } = await import("./booking");
-    const code = normalizeReference(data.code);
-    if (!/^[A-Z0-9]{4,12}$/.test(code)) return { found: false as const };
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await supabaseAdmin
-      .from("bookings")
-      .select("reference, service, status, travel_date, created_at, approved_at, completed_at, tracking")
-      .eq("reference", code)
-      .maybeSingle();
-    if (error) {
-      console.error(error);
-      throw new Error("Could not look up that code");
-    }
-    if (!row) return { found: false as const };
-    return {
-      found: true as const,
-      reference: row.reference,
-      service: row.service,
-      status: row.status,
-      completed_at: row.completed_at,
-      pickup_date: row.travel_date,
-      booked_at: row.created_at,
-      approved_at: row.approved_at,
-      tracking: parseTracking(row.tracking),
-    };
-  });

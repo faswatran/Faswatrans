@@ -11,5 +11,6 @@
 - [ ] Dashboard "Pages" section to edit page text and background photos.
 - [ ] Order search finds booking codes (with or without #).
 - [x] Full name on every booking form; used in approval and other customer messages.
+- [ ] Netlify booking and tracking without a service-role key; verify public privacy rules, login and build.
 - [ ] Logo and photos saved in /public (logo.png, hero-bus.jpg) and used everywhere.
 - [ ] Only admin@faswatrans.com.ng and faswatrans@gmail.com can open the dashboard.
