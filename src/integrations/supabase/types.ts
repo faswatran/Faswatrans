@@ -177,6 +177,20 @@ export type Database = {
         Returns: boolean
       }
       is_staff_email: { Args: { _email: string }; Returns: boolean }
+      lookup_booking: {
+        Args: { p_code: string }
+        Returns: {
+          approved_at: string
+          completed_at: string
+          created_at: string
+          reference: string
+          service: string
+          status: string
+          tracking: Json
+          travel_date: string
+        }[]
+      }
+      submit_booking: { Args: { p_booking: Json }; Returns: string }
     }
     Enums: {
       app_role: "admin"
