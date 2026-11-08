@@ -11,8 +11,8 @@ export const Route = createFileRoute("/api/public/news-photo/$")({
         if (!path || path.includes("..") || path.startsWith("/")) {
           return new Response("Not found", { status: 404 });
         }
-        const url = import.meta.env.VITE_SUPABASE_URL;
-        const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+        const url = import.meta.env['VITE_SUPABASE_URL'];
+        const key = import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'];
         if (!url || !key) return new Response("Not configured", { status: 503 });
         const client = createClient(url, key, {
           auth: { persistSession: false, autoRefreshToken: false },
