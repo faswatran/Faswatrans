@@ -100,10 +100,10 @@ function fmtPickup(b: Booking) {
 function Dashboard() {
   const [rows, setRows] = useState<Booking[] | null>(null);
   const [query, setQuery] = useState("");
-  const load = useCallback(async () => {
+   const load = useCallback(async () => {
     const { data, error } = await supabase.from("bookings").select("*").order("created_at", { ascending: false });
     if (error) toast.error(error.message);
-    setRows(data ?? []);
+    setRows((data ?? []).filter((b) => b.status !== "archived"));
   }, []);
   useEffect(() => { load(); }, [load]);
 
