@@ -140,10 +140,10 @@ function Dashboard() {
     load();
   }
 
-    async function deleteOrder(b: Booking) {
+      async function deleteOrder(b: Booking) {
     const ok = window.confirm(`Delete finished order #${b.reference}? This cannot be undone.`);
     if (!ok) return;
-    const { error } = await supabase.from("bookings").delete().eq("id", b.id);
+    const { error } = await supabase.from("bookings").update({ status: "archived" }).eq("id", b.id);
     if (error) { toast.error(error.message); return; }
     toast.success(`Order #${b.reference} deleted`);
     load();
@@ -154,7 +154,7 @@ function Dashboard() {
     cutoff.setDate(cutoff.getDate() - 90);
     const ok = window.confirm(`Delete ALL finished orders older than 90 days? This cannot be undone.`);
     if (!ok) return;
-    const { error } = await supabase.from("bookings").delete().eq("status", "completed").lt("completed_at", cutoff.toISOString());
+const { error } = await supabase.from("bookings").update({ status: "archived" }).eq("status", "completed").lt("completed_at", cutoff.toISOString());
     if (error) { toast.error(error.message); return; }
     toast.success("Old finished orders deleted");
     load();
