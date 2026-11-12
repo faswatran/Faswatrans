@@ -140,6 +140,25 @@ function Dashboard() {
     load();
   }
 
+    async function deleteOrder(b: Booking) {
+    const ok = window.confirm(`Delete finished order #${b.reference}? This cannot be undone.`);
+    if (!ok) return;
+    const { error } = await supabase.from("bookings").delete().eq("id", b.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success(`Order #${b.reference} deleted`);
+    load();
+  }
+
+  async function deleteOldFinished() {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 90);
+    const ok = window.confirm(`Delete ALL finished orders older than 90 days? This cannot be undone.`);
+    if (!ok) return;
+    const { error } = await supabase.from("bookings").delete().eq("status", "completed").lt("completed_at", cutoff.toISOString());
+    if (error) { toast.error(error.message); return; }
+    toast.success("Old finished orders deleted");
+    load();
+  }
   async function finishTrip(b: Booking) {
     const { error } = await supabase
       .from("bookings")
@@ -157,7 +176,7 @@ function Dashboard() {
   if (!rows) return <p className="p-10 text-center text-muted-foreground">Loading…</p>;
   const count = (service: string | null, group?: OrderGroup) =>
     rows.filter((b) => (!service || b.service === service) && (!group || orderGroup(b.status) === group)).length;
-  const actions = { onStatus: setStatus, onAdvance: advanceDelivery, onFinish: finishTrip };
+    const actions = { onStatus: setStatus, onAdvance: advanceDelivery, onFinish: finishTrip, onDelete: deleteOrder };
 
   const q = query.trim().toLowerCase();
   const results = q
@@ -250,8 +269,13 @@ function Dashboard() {
           );
         })}
 
-        <TabsContent value="finished" className="mt-6">
-          <h2 className="font-display text-xl">Finished orders</h2>
+                <TabsContent value="finished" className="mt-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-display text-xl">Finished orders</h2>
+            <Button size="sm" variant="destructive" onClick={deleteOldFinished}>
+              Delete all finished older than 90 days
+            </Button>
+          </div>
           <Tabs defaultValue="Staff booking" className="mt-3">
             <TabsList className="flex h-auto flex-wrap justify-start">
               {SERVICE_TABS.map((t) => (
@@ -287,6 +311,7 @@ type Actions = {
   onStatus: (b: Booking, s: "approved" | "declined") => void;
   onAdvance: (b: Booking) => void;
   onFinish: (b: Booking) => void;
+  onDelete: (b: Booking) => void;
 };
 
 function OrderList({ items, empty, showService, ...actions }: { items: Booking[]; empty: string; showService?: boolean } & Actions) {
@@ -298,7 +323,7 @@ function OrderList({ items, empty, showService, ...actions }: { items: Booking[]
   );
 }
 
-function OrderRow({ b, showService, onStatus, onAdvance, onFinish }: { b: Booking; showService?: boolean | undefined } & Actions) {
+function OrderRow({ b, showService, onStatus, onAdvance, onFinish, onDelete }: { b: Booking; showService?: boolean | undefined } & Actions) {
   const next = b.service === "Delivery" && b.status === "approved" ? nextDeliveryStage(parseTracking(b.tracking)) : null;
   return (
     <Collapsible className="p-4">
@@ -321,8 +346,11 @@ function OrderRow({ b, showService, onStatus, onAdvance, onFinish }: { b: Bookin
           </>
         )}
         {next && <Button size="sm" onClick={() => onAdvance(b)}>Mark {next.label.toLowerCase()}</Button>}
-        {b.status === "approved" && (b.service === "Event hiring" || b.service === "Private charter" || b.service === "Staff booking") && (
+               {b.status === "approved" && (b.service === "Event hiring" || b.service === "Private charter" || b.service === "Staff booking") && (
           <Button size="sm" onClick={() => onFinish(b)}>Mark finished</Button>
+        )}
+        {b.status === "completed" && (
+          <Button size="sm" variant="destructive" onClick={() => onDelete(b)}>Delete</Button>
         )}
         <CollapsibleTrigger asChild>
           <Button size="sm" variant="ghost" className="group">
