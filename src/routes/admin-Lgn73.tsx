@@ -321,7 +321,7 @@ function OrderRow({ b, showService, onStatus, onAdvance, onFinish }: { b: Bookin
           </>
         )}
         {next && <Button size="sm" onClick={() => onAdvance(b)}>Mark {next.label.toLowerCase()}</Button>}
-        {b.status === "approved" && (b.service === "Event hiring" || b.service === "Private charter") && (
+        {b.status === "approved" && (b.service === "Event hiring" || b.service === "Private charter" || b.service === "Staff booking") && (
           <Button size="sm" onClick={() => onFinish(b)}>Mark finished</Button>
         )}
         <CollapsibleTrigger asChild>
