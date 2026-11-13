@@ -31,6 +31,8 @@ export function BookingForm({ service }: { service: BookingService }) {
     }
     setBusy(true);
     try {
+      const pickupDate = String(f.get("pickup_date"));
+      const pickupTime = String(f.get("pickup_time"));
       const res = await submit({
         data: {
           service,
@@ -39,7 +41,7 @@ export function BookingForm({ service }: { service: BookingService }) {
           phone: String(f.get("phone")),
           origin: String(f.get("origin")),
           destination: isEvent ? undefined : String(f.get("destination")),
-          pickup_at: String(f.get("pickup_at")),
+          pickup_at: `${pickupDate}T${pickupTime}`,
           passengers: isEvent ? Number(f.get("passengers")) : undefined,
           return_trip: hasReturn && returnTrip,
           vehicle: isCharter ? vehicle : undefined,
@@ -79,7 +81,8 @@ export function BookingForm({ service }: { service: BookingService }) {
       <Field name="email" label="Email (Gmail or other)" type="email" autoComplete="email" placeholder="you@gmail.com" maxLength={200} />
       <Field name="phone" label="WhatsApp number" type="tel" autoComplete="tel" placeholder="e.g. +234 801 234 5678" minLength={7} maxLength={20} />
       <Field name="origin" label="Pickup location" placeholder="Street, area or landmark" minLength={2} maxLength={60} />
-      <Field name="pickup_at" label="Pickup date & time" type="datetime-local" />
+      <Field name="pickup_date" label="Pickup date" type="date" className="sm:col-span-2" />
+      <Field name="pickup_time" label="Pickup time" type="time" className="sm:col-span-2" />
       {!isEvent && <Field name="destination" label={destLabel} placeholder={isDelivery ? "Where should we deliver?" : "Address or destination"} minLength={2} maxLength={60} className={isEvent ? "" : "sm:col-span-2"} />}
       {isDelivery && <Field name="items" label="What are we delivering?" placeholder="e.g. 3 cartons, documents" minLength={2} maxLength={120} className="sm:col-span-2" />}
       {isDelivery && (
@@ -127,7 +130,6 @@ function Field({ name, label, className, required = true, ...rest }: { name: str
   );
 }
 
-// Resize phone photos so uploads stay small and fast.
 async function shrinkImage(file: File) {
   const bitmap = await createImageBitmap(file);
   const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
@@ -142,13 +144,12 @@ async function shrinkImage(file: File) {
   return { type: "image/jpeg" as const, data: preview.split(",")[1] ?? "", preview };
 }
 
-// Turn a failed request into a message that tells the customer what to fix.
 function bookingErrorMessage(err: unknown) {
   const raw = err instanceof Error ? err.message : "";
   try {
     const issues = JSON.parse(raw) as { path?: string[]; message?: string }[];
     if (Array.isArray(issues) && issues[0]) {
-      const field: Record<string, string> = { full_name: "Full name", email: "Email", phone: "WhatsApp number", origin: "Pickup location", pickup_at: "Pickup date & time", destination: "Destination", passengers: "Number of people", items: "Item description", photo: "Photo", vehicle: "Vehicle" };
+      const field: Record<string, string> = { full_name: "Full name", email: "Email", phone: "WhatsApp number", origin: "Pickup location", pickup_at: "Pickup date & time", pickup_date: "Pickup date", pickup_time: "Pickup time", destination: "Destination", passengers: "Number of people", items: "Item description", photo: "Photo", vehicle: "Vehicle" };
       const i = issues[0] as { path?: string[]; message?: string };
       const name = field[i.path?.[0] ?? ""];
       return name ? `${name}: ${i.message ?? "please check this field."}` : i.message ?? "Please check your details and try again.";
